@@ -1,0 +1,372 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\favoritepropertyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\favoritepropertyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\messageconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\messageconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\propertyimageconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\propertyimageconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\improvementconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\improvementconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\saletypeconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\saletypeconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\propertytypeconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\propertytypeconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\entityconfigurations\\propertyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\entityconfigurations\\propertyconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.infrastructure.persistence\\contexts\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBBC2CF2-2CE7-E360-38CF-FC2B3C4B4854}|RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj|solutionrelative:realestateapp.infrastructure.persistence\\contexts\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\favoriteproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\favoriteproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\offer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\offer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\property.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\property.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\improvement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\improvement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\saletype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\saletype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\entities\\propertytype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\entities\\propertytype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\enum\\offerstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\enum\\offerstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\enum\\propertystatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\enum\\propertystatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|c:\\users\\elava\\source\\repos\\realestateapp\\realestateapp.core.domain\\common\\auditablebaseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F51DBB03-258C-AE5F-7C88-285FB571787B}|RealEstateApp.Core.Domain\\RealEstateApp.Core.Domain.csproj|solutionrelative:realestateapp.core.domain\\common\\auditablebaseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FavoritePropertyConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\FavoritePropertyConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\FavoritePropertyConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\FavoritePropertyConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\FavoritePropertyConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:44:11.075Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MessageConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\MessageConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\MessageConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\MessageConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\MessageConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:44:01.139Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PropertyImageConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyImageConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyImageConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyImageConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyImageConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:43:47.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ImprovementConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\ImprovementConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\ImprovementConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\ImprovementConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\ImprovementConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:43:23.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SaleTypeConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\SaleTypeConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\SaleTypeConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\SaleTypeConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\SaleTypeConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:43:12.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PropertyTypeConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyTypeConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyTypeConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyTypeConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyTypeConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAcwBUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:42:51.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ServiceRegistration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\ServiceRegistration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\ServiceRegistration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\ServiceRegistration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\ServiceRegistration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:32:25.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\Repositories\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\Repositories\\GenericRepository.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\Repositories\\GenericRepository.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\Repositories\\GenericRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:32:03.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PropertyConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyConfiguration.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyConfiguration.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyConfiguration.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\EntityConfigurations\\PropertyConfiguration.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAcwDsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:31:32.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\Contexts\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Infrastructure.Persistence\\Contexts\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\Contexts\\ApplicationDbContext.cs",
+              "RelativeToolTip": "RealEstateApp.Infrastructure.Persistence\\Contexts\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAowBQAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:30:44.374Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FavoriteProperty.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\FavoriteProperty.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\FavoriteProperty.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\FavoriteProperty.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\FavoriteProperty.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:24:35.083Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Message.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Message.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\Message.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Message.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\Message.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:24:18.881Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Offer.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Offer.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\Offer.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Offer.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\Offer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:24:07.18Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Property.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Property.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\Property.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Property.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\Property.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:23:49.672Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Improvement.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Improvement.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\Improvement.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\Improvement.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\Improvement.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:21:59.985Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "SaleType.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\SaleType.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\SaleType.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\SaleType.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\SaleType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:21:42.798Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "PropertyType.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\PropertyType.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Entities\\PropertyType.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Entities\\PropertyType.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Entities\\PropertyType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:21:20.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "OfferStatus.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Enum\\OfferStatus.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Enum\\OfferStatus.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Enum\\OfferStatus.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Enum\\OfferStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:21:08.374Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "PropertyStatus.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Enum\\PropertyStatus.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Enum\\PropertyStatus.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Enum\\PropertyStatus.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Enum\\PropertyStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:20:56.011Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AuditableBaseEntity.cs",
+              "DocumentMoniker": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Common\\AuditableBaseEntity.cs",
+              "RelativeDocumentMoniker": "RealEstateApp.Core.Domain\\Common\\AuditableBaseEntity.cs",
+              "ToolTip": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Domain\\Common\\AuditableBaseEntity.cs",
+              "RelativeToolTip": "RealEstateApp.Core.Domain\\Common\\AuditableBaseEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T14:20:26.294Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Infrastructure.Shared.deps.json
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Infrastructure.Shared.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Infrastructure.Shared.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Core.Application.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Core.Domain.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Core.Application.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\bin\Debug\net10.0\RealEstateApp.Core.Domain.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.csproj.AssemblyReference.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.AssemblyInfoInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.AssemblyInfo.cs
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.csproj.CoreCompileInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEsta.49E698EE.Up2Date
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\refint\RealEstateApp.Infrastructure.Shared.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\ref\RealEstateApp.Infrastructure.Shared.dll

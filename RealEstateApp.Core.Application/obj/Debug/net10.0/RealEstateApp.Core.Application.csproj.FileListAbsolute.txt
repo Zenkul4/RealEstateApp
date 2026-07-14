@@ -1,0 +1,15 @@
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\bin\Debug\net10.0\RealEstateApp.Core.Application.deps.json
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\bin\Debug\net10.0\RealEstateApp.Core.Application.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\bin\Debug\net10.0\RealEstateApp.Core.Application.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\bin\Debug\net10.0\RealEstateApp.Core.Domain.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\bin\Debug\net10.0\RealEstateApp.Core.Domain.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.csproj.AssemblyReference.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.AssemblyInfoInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.AssemblyInfo.cs
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.csproj.CoreCompileInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEsta.D3454DC8.Up2Date
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\refint\RealEstateApp.Core.Application.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\RealEstateApp.Core.Application.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Application\obj\Debug\net10.0\ref\RealEstateApp.Core.Application.dll

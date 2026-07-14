@@ -1,0 +1,17 @@
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Infrastructure.Identity.deps.json
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Infrastructure.Identity.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Infrastructure.Identity.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Core.Application.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Core.Domain.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Core.Application.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\bin\Debug\net10.0\RealEstateApp.Core.Domain.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.csproj.AssemblyReference.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.AssemblyInfoInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.AssemblyInfo.cs
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.csproj.CoreCompileInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEsta.E0760DC7.Up2Date
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\refint\RealEstateApp.Infrastructure.Identity.dll
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\RealEstateApp.Infrastructure.Identity.pdb
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Identity\obj\Debug\net10.0\ref\RealEstateApp.Infrastructure.Identity.dll
