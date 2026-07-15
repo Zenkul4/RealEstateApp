@@ -27,6 +27,7 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+.vs/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -38,6 +39,7 @@ ScaffoldingReadMe.txt
 
 # dotenv environment variables file
 .env
+.Docs/apikey.env
 
 # Others
 ~$*

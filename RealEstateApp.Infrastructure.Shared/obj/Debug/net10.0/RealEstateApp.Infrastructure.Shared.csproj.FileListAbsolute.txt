@@ -10,6 +10,7 @@ C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\ob
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.AssemblyInfoInputs.cache
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.AssemblyInfo.cs
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.csproj.CoreCompileInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.sourcelink.json
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEsta.49E698EE.Up2Date
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\RealEstateApp.Infrastructure.Shared.dll
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Infrastructure.Shared\obj\Debug\net10.0\refint\RealEstateApp.Infrastructure.Shared.dll
