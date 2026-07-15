@@ -5,6 +5,7 @@ C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\ne
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.AssemblyInfoInputs.cache
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.AssemblyInfo.cs
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.csproj.CoreCompileInputs.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.sourcelink.json
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.dll
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\refint\RealEstateApp.Core.Domain.dll
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Core.Domain\obj\Debug\net10.0\RealEstateApp.Core.Domain.pdb

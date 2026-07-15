@@ -157,6 +157,7 @@ C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\RealEstateApp.Presentation.WebApi.csproj.CoreCompileInputs.cache
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\RealEstateApp.Presentation.WebApi.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\RealEstateApp.Presentation.WebApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\RealEstateApp.Presentation.WebApi.sourcelink.json
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\elava\source\repos\RealEstateApp\RealEstateApp.Presentation.WebApi\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
