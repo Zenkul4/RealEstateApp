@@ -1,10 +1,10 @@
-﻿// ServiceRegistration.cs
+// ServiceRegistration.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealEstateApp.Core.Application.Interfaces.Repositories;
 using RealEstateApp.Infrastructure.Persistence.Contexts;
-// using RealEstateApp.Infrastructure.Persistence.Repositories; // Descomentarás esto cuando creemos el repositorio
+using RealEstateApp.Infrastructure.Persistence.Repositories;
 
 namespace RealEstateApp.Infrastructure.Persistence;
 
@@ -19,6 +19,6 @@ public static class ServiceRegistration
                 m => m.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
         // Registro del repositorio genérico
-        // services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepository<>)); // Descomentarás esto cuando generemos el código
+        services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepository<>));
     }
 }

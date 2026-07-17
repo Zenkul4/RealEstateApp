@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SACTYJB40yY=",
+  "dgSpecHash": "KK7In/nNH4c=",
   "success": true,
-  "projectFilePath": "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj",
+  "projectFilePath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\elava\\.nuget\\packages\\automapper\\16.2.0\\automapper.16.2.0.nupkg.sha512",
     "C:\\Users\\elava\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.0\\microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",

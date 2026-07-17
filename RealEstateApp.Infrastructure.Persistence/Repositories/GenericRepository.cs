@@ -1,5 +1,8 @@
-﻿// Repositories/GenericRepository.cs
+// Repositories/GenericRepository.cs
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Application.Interfaces.Repositories;
@@ -43,5 +46,25 @@ public class GenericRepository<T> : IGenericRepositoryAsync<T> where T : class
     {
         _dbContext.Set<T>().Remove(entity);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public virtual async Task<T?> GetByIdWithIncludeAsync(int id, params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _dbContext.Set<T>();
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+        return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+    }
+
+    public virtual async Task<IReadOnlyList<T>> GetAllWithIncludeAsync(params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _dbContext.Set<T>();
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+        return await query.ToListAsync();
     }
 }
