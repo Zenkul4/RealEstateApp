@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -132,11 +132,78 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            // CORRECCIÓN: Conversión explícita del Enum a String
-            await _userManager.AddToRoleAsync(user, request.UserType.ToString());
+            await _userManager.AddToRoleAsync(user, MapUserTypeToRole(request.UserType));
             return new RegisterResponse { HasError = false };
         }
 
         return new RegisterResponse { HasError = true, Error = "Ha ocurrido un error al registrar el usuario." };
+    }
+
+    private string MapUserTypeToRole(UserType userType)
+    {
+        return userType switch
+        {
+            UserType.Administrator => "Administrador",
+            UserType.Client => "Cliente",
+            UserType.Agent => "Agente",
+            UserType.Developer => "Desarrollador",
+            _ => userType.ToString()
+        };
+    }
+
+    public async Task<List<UserDto>> GetUsersByRoleAsync(string role)
+    {
+        var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+        var userDtos = new List<UserDto>();
+        foreach (var user in usersInRole)
+        {
+            userDtos.Add(new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email!,
+                Phone = user.PhoneNumber ?? string.Empty,
+                Cedula = user.Cedula,
+                PhotoUrl = user.PhotoUrl,
+                Role = role,
+                IsActive = user.EmailConfirmed
+            });
+        }
+        return userDtos;
+    }
+
+    public async Task<UserDto> GetUserByIdAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return null!;
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? string.Empty;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email!,
+            Phone = user.PhoneNumber ?? string.Empty,
+            Cedula = user.Cedula,
+            PhotoUrl = user.PhotoUrl,
+            Role = role,
+            IsActive = user.EmailConfirmed
+        };
+    }
+
+    public async Task UpdateUserStatusAsync(string id, bool isActive)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user != null)
+        {
+            user.EmailConfirmed = isActive;
+            await _userManager.UpdateAsync(user);
+        }
     }
 }
