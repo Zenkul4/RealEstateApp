@@ -1,4 +1,4 @@
-﻿// ViewModels/Properties/SavePropertyViewModel.cs
+// ViewModels/Properties/SavePropertyViewModel.cs
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,11 +9,11 @@ public class SavePropertyViewModel
     public int Id { get; set; }
 
     [Required(ErrorMessage = "El precio es requerido.")]
-    [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a cero.")]
+    [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "El precio debe ser mayor a cero.")]
     public decimal Price { get; set; }
 
     [Required(ErrorMessage = "El tamaño de la propiedad es requerido.")]
-    [Range(0.01, double.MaxValue, ErrorMessage = "El tamaño debe ser mayor a cero.")]
+    [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "El tamaño debe ser mayor a cero.")]
     public decimal LandSize { get; set; }
 
     [Required(ErrorMessage = "La cantidad de habitaciones es requerida.")]

@@ -3554,17 +3554,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj": {
-              "projectPath": "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj"
+            "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj": {
+              "projectPath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj"
             },
-            "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Identity\\RealEstateApp.Infrastructure.Identity.csproj": {
-              "projectPath": "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Identity\\RealEstateApp.Infrastructure.Identity.csproj"
+            "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Identity\\RealEstateApp.Infrastructure.Identity.csproj": {
+              "projectPath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Identity\\RealEstateApp.Infrastructure.Identity.csproj"
             },
-            "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj": {
-              "projectPath": "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj"
+            "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj": {
+              "projectPath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Persistence\\RealEstateApp.Infrastructure.Persistence.csproj"
             },
-            "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Shared\\RealEstateApp.Infrastructure.Shared.csproj": {
-              "projectPath": "c:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Shared\\RealEstateApp.Infrastructure.Shared.csproj"
+            "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Shared\\RealEstateApp.Infrastructure.Shared.csproj": {
+              "projectPath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Infrastructure.Shared\\RealEstateApp.Infrastructure.Shared.csproj"
             }
           }
         }
