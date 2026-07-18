@@ -1,0 +1,83 @@
+@model List<PropertyViewModel>
+@{
+    ViewData["Title"] = "Mis Favoritos";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Mis Inmuebles Favoritos</h2>
+            <p class="text-muted m-0 fs-6">Consulte y administre la lista de propiedades de su interés.</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn-outline-slate">Volver al buscador</a>
+        </div>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="architect-card text-center py-5">
+            <p class="text-muted fs-5 mb-0">No tiene propiedades agregadas a su lista de favoritos.</p>
+            <p class="text-muted fs-6 mt-1">Explore el buscador e interactúe con el ícono de corazón para guardar inmuebles.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                var hasImage = property.ImageUrls != null && property.ImageUrls.Count > 0;
+                var mainImage = hasImage ? property.ImageUrls[0] : "/images/placeholder.jpg";
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="architect-card h-100 d-flex flex-column justify-content-between position-relative">
+                        <div>
+                            <!-- Img wrapper -->
+                            <div class="position-relative overflow-hidden" style="height: 200px; background-color: #e2e8f0;">
+                                <img src="@mainImage" class="w-100 h-100" style="object-fit: cover;" alt="Propiedad" />
+                                <span class="position-absolute top-0 start-0 bg-slate-dark text-white rounded-0 px-3 py-2 text-uppercase font-monospace fs-7 shadow-sm">CÓD: @property.Code</span>
+                                <span class="position-absolute bottom-0 end-0 bg-brass text-white rounded-0 px-3 py-1 text-uppercase fs-8 fw-bold">@property.SaleTypeName</span>
+
+                                <!-- Remover de Favoritos -->
+                                <form asp-action="ToggleFavorite" method="post" class="position-absolute top-0 end-0 m-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="propertyId" value="@property.Id" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                    <button type="submit" class="btn btn-white btn-sm shadow-sm rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 38px; height: 38px; border: none;">
+                                        <span class="text-danger fs-5" style="line-height:1;">♥</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="architect-body">
+                                <h4 class="fw-bold text-slate-dark mb-1">@property.Price.ToString("C") DOP</h4>
+                                <h6 class="text-brass text-uppercase tracking-wider fs-7 mb-3">@property.PropertyTypeName</h6>
+                                <p class="text-muted fs-6 mb-4 text-truncate-2">@property.Description</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto">
+                            <div class="row text-center bg-light g-0 py-2 border-top border-bottom border-light">
+                                <div class="col-4 border-end border-light">
+                                    <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Hab.</small>
+                                    <span class="fw-bold text-slate-medium">@property.Rooms</span>
+                                </div>
+                                <div class="col-4 border-end border-light">
+                                    <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Baños</small>
+                                    <span class="fw-bold text-slate-medium">@property.Bathrooms</span>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Área</small>
+                                    <span class="fw-bold text-slate-medium">@property.LandSize.ToString("N0") m²</span>
+                                </div>
+                            </div>
+                            <div class="architect-body py-3 text-center">
+                                <a asp-action="Details" asp-route-id="@property.Id" class="btn-outline-brass w-100 d-block text-center py-2 text-uppercase tracking-wider fs-7">Ver detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,171 @@
+@model SavePropertyViewModel
+@{
+    ViewData["Title"] = "Editar Propiedad";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="architect-card mt-3">
+                <div class="architect-header bg-slate-dark text-white p-4">
+                    <h4 class="fw-bold m-0 text-uppercase tracking-wider fs-5"><span class="text-brass">Editar</span> Propiedad</h4>
+                    <p class="text-muted m-0 fs-6 mt-1">Actualice los detalles y las imágenes del inmueble.</p>
+                </div>
+                <div class="architect-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="AgentId" />
+                        
+                        <input type="hidden" asp-for="ImageOneUrl" />
+                        <input type="hidden" asp-for="ImageTwoUrl" />
+                        <input type="hidden" asp-for="ImageThreeUrl" />
+                        <input type="hidden" asp-for="ImageFourUrl" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-0 border-0 shadow-sm mb-4"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="PropertyTypeId" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Tipo de Propiedad</label>
+                                <select asp-for="PropertyTypeId" asp-items="ViewBag.PropertyTypes" class="form-select rounded-0 py-2 border-slate">
+                                    <option value="">Seleccione un tipo</option>
+                                </select>
+                                <span asp-validation-for="PropertyTypeId" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="SaleTypeId" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Tipo de Venta</label>
+                                <select asp-for="SaleTypeId" asp-items="ViewBag.SaleTypes" class="form-select rounded-0 py-2 border-slate">
+                                    <option value="">Seleccione una modalidad</option>
+                                </select>
+                                <span asp-validation-for="SaleTypeId" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="Price" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Precio (DOP)</label>
+                                <input asp-for="Price" type="number" step="0.01" class="form-control rounded-0 py-2 border-slate" />
+                                <span asp-validation-for="Price" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="LandSize" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Tamaño del Terreno (m²)</label>
+                                <input asp-for="LandSize" type="number" step="0.01" class="form-control rounded-0 py-2 border-slate" />
+                                <span asp-validation-for="LandSize" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="Rooms" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Habitaciones</label>
+                                <input asp-for="Rooms" type="number" class="form-control rounded-0 py-2 border-slate" />
+                                <span asp-validation-for="Rooms" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label asp-for="Bathrooms" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Baños</label>
+                                <input asp-for="Bathrooms" type="number" class="form-control rounded-0 py-2 border-slate" />
+                                <span asp-validation-for="Bathrooms" class="text-danger fs-6 mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Descripción General</label>
+                            <textarea asp-for="Description" class="form-control rounded-0 py-2 border-slate" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger fs-6 mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Checkboxes de Mejoras -->
+                        <div class="mb-4">
+                            <label class="form-label text-uppercase fs-7 tracking-wide fw-bold d-block mb-3 border-bottom pb-2 border-light">Mejoras / Características</label>
+                            <div class="row">
+                                @if (ViewBag.Improvements != null)
+                                {
+                                    foreach (var imp in ViewBag.Improvements)
+                                    {
+                                        <div class="col-md-4 col-sm-6 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="SelectedImprovements" value="@imp.Id" id="imp-@imp.Id" 
+                                                       @(Model.SelectedImprovements.Contains(imp.Id) ? "checked" : "") />
+                                                <label class="form-check-label text-slate-medium" for="imp-@imp.Id">
+                                                    @imp.Name
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <span asp-validation-for="SelectedImprovements" class="text-danger fs-6 mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Edición y Subida de Imágenes -->
+                        <div class="mb-4">
+                            <label class="form-label text-uppercase fs-7 tracking-wide fw-bold d-block mb-3 border-bottom pb-2 border-light">Galería de Imágenes (Reemplace o suba nuevas fotos)</label>
+                            
+                            <div class="row">
+                                <!-- Imagen 1 -->
+                                <div class="col-md-6 col-sm-12 mb-4">
+                                    <label asp-for="ImageOne" class="form-label fs-8 text-muted">Imagen Principal</label>
+                                    @if (!string.IsNullOrEmpty(Model.ImageOneUrl))
+                                    {
+                                        <div class="mb-2 border border-light p-1 bg-light text-center" style="max-height: 150px; overflow: hidden;">
+                                            <img src="@Model.ImageOneUrl" alt="Imagen 1" class="img-fluid" style="height: 100px; object-fit: cover;" />
+                                        </div>
+                                    }
+                                    <input asp-for="ImageOne" type="file" class="form-control rounded-0 border-slate" />
+                                    <span asp-validation-for="ImageOne" class="text-danger fs-6 mt-1 d-block"></span>
+                                </div>
+
+                                <!-- Imagen 2 -->
+                                <div class="col-md-6 col-sm-12 mb-4">
+                                    <label asp-for="ImageTwo" class="form-label fs-8 text-muted">Imagen Auxiliar 1</label>
+                                    @if (!string.IsNullOrEmpty(Model.ImageTwoUrl))
+                                    {
+                                        <div class="mb-2 border border-light p-1 bg-light text-center" style="max-height: 150px; overflow: hidden;">
+                                            <img src="@Model.ImageTwoUrl" alt="Imagen 2" class="img-fluid" style="height: 100px; object-fit: cover;" />
+                                        </div>
+                                    }
+                                    <input asp-for="ImageTwo" type="file" class="form-control rounded-0 border-slate" />
+                                </div>
+
+                                <!-- Imagen 3 -->
+                                <div class="col-md-6 col-sm-12 mb-4">
+                                    <label asp-for="ImageThree" class="form-label fs-8 text-muted">Imagen Auxiliar 2</label>
+                                    @if (!string.IsNullOrEmpty(Model.ImageThreeUrl))
+                                    {
+                                        <div class="mb-2 border border-light p-1 bg-light text-center" style="max-height: 150px; overflow: hidden;">
+                                            <img src="@Model.ImageThreeUrl" alt="Imagen 3" class="img-fluid" style="height: 100px; object-fit: cover;" />
+                                        </div>
+                                    }
+                                    <input asp-for="ImageThree" type="file" class="form-control rounded-0 border-slate" />
+                                </div>
+
+                                <!-- Imagen 4 -->
+                                <div class="col-md-6 col-sm-12 mb-4">
+                                    <label asp-for="ImageFour" class="form-label fs-8 text-muted">Imagen Auxiliar 3</label>
+                                    @if (!string.IsNullOrEmpty(Model.ImageFourUrl))
+                                    {
+                                        <div class="mb-2 border border-light p-1 bg-light text-center" style="max-height: 150px; overflow: hidden;">
+                                            <img src="@Model.ImageFourUrl" alt="Imagen 4" class="img-fluid" style="height: 100px; object-fit: cover;" />
+                                        </div>
+                                    }
+                                    <input asp-for="ImageFour" type="file" class="form-control rounded-0 border-slate" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4">
+                            <a asp-action="Index" class="btn-outline-slate">Volver atrás</a>
+                            <button type="submit" class="btn-brass shadow-sm">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

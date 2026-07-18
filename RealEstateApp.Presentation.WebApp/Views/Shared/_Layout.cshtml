@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RealEstateApp.Presentation.WebApp.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-slate-dark border-bottom border-slate mb-4 py-3 shadow-sm">
             <div class="container-fluid px-4">
@@ -25,7 +25,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link px-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link px-3" asp-area="" asp-controller="Home" asp-action="Index">Buscador</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-area="" asp-controller="Home" asp-action="Favorites">Mis Favoritos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-area="" asp-controller="Property" asp-action="Index">Mis Propiedades</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-area="" asp-controller="Admin" asp-action="Agents">Agentes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-3" asp-area="" asp-controller="PropertyType" asp-action="Index">Tipos de Propiedad</a>
@@ -47,7 +56,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-auto py-3 bg-light">
         <div class="container">
             &copy; 2026 - RealEstateApp.Presentation.WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

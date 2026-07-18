@@ -12,4 +12,5 @@ public interface IPropertyService
     Task Delete(int id);
     Task<SavePropertyViewModel> GetByIdSaveViewModel(int id);
     Task<List<PropertyViewModel>> GetAllWithInclude();
+    Task<PropertyViewModel> GetByIdWithInclude(int id);
 }

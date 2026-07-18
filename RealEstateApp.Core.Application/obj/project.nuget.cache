@@ -1,14 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KK7In/nNH4c=",
+  "dgSpecHash": "ZD7dtogVVvc=",
   "success": true,
   "projectFilePath": "C:\\Users\\elava\\source\\repos\\RealEstateApp\\RealEstateApp.Core.Application\\RealEstateApp.Core.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\elava\\.nuget\\packages\\automapper\\16.2.0\\automapper.16.2.0.nupkg.sha512",
-    "C:\\Users\\elava\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.0\\microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512",
-    "C:\\Users\\elava\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.0\\microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512",
-    "C:\\Users\\elava\\.nuget\\packages\\microsoft.extensions.options\\10.0.0\\microsoft.extensions.options.10.0.0.nupkg.sha512",
-    "C:\\Users\\elava\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.0\\microsoft.extensions.primitives.10.0.0.nupkg.sha512",
     "C:\\Users\\elava\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.14.0\\microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512",
     "C:\\Users\\elava\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.14.0\\microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512",
     "C:\\Users\\elava\\.nuget\\packages\\microsoft.identitymodel.logging\\8.14.0\\microsoft.identitymodel.logging.8.14.0.nupkg.sha512",

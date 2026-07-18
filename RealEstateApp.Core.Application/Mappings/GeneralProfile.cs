@@ -25,7 +25,7 @@ public class GeneralProfile : Profile
 
         CreateMap<Property, SavePropertyViewModel>()
             .ForMember(dest => dest.LandSize, opt => opt.MapFrom(src => src.Size))
-            .ForMember(dest => dest.Improvements, opt => opt.Ignore())
+            .ForMember(dest => dest.SelectedImprovements, opt => opt.Ignore())
             .ReverseMap()
             .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.LandSize))
             .ForMember(dest => dest.Improvements, opt => opt.Ignore())

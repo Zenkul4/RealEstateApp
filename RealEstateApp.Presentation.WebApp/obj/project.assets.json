@@ -1144,7 +1144,10 @@
         },
         "runtime": {
           "bin/placeholder/RealEstateApp.Core.Application.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "RealEstateApp.Core.Domain/1.0.0": {
         "type": "project",

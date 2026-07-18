@@ -9,4 +9,5 @@ public class UserViewModel
     public string FullName { get; set; } = null!;
     public string Role { get; set; } = null!;
     public bool IsActive { get; set; }
+    public int ActivePropertiesCount { get; set; }
 }

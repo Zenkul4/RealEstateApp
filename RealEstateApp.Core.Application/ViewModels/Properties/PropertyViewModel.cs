@@ -1,4 +1,4 @@
-﻿// ViewModels/Properties/PropertyViewModel.cs
+// ViewModels/Properties/PropertyViewModel.cs
 // Corrección arquitectónica: Se ha cambiado el tipo de 'Price' y 'LandSize' de 'double' a 'decimal' 
 // para cumplir estrictamente con el estándar del proyecto y la regla de negocio (DOP).
 
@@ -19,4 +19,6 @@ public class PropertyViewModel
     public string PropertyTypeName { get; set; } = null!;
     public int SaleTypeId { get; set; }
     public string SaleTypeName { get; set; } = null!;
+    public System.Collections.Generic.List<string> ImageUrls { get; set; } = new();
+    public System.Collections.Generic.List<string> ImprovementNames { get; set; } = new();
 }

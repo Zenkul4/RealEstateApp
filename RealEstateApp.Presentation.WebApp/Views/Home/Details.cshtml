@@ -1,0 +1,154 @@
+@model PropertyViewModel
+@{
+    ViewData["Title"] = $"Propiedad CÓD: {Model.Code}";
+}
+
+<div class="container px-4 mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Ficha Técnica del Inmueble</h2>
+            <p class="text-brass m-0 fs-6 text-uppercase tracking-wider fw-bold">@Model.PropertyTypeName en @Model.SaleTypeName</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn-outline-slate">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Side: Property Specs and Images -->
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <!-- Carousel of Images -->
+            <div class="architect-card mb-4 overflow-hidden">
+                @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+                {
+                    <div id="propertyImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                            {
+                                <button type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i+1)"></button>
+                            }
+                        </div>
+                        <div class="carousel-inner" style="height: 480px; background-color: #000;">
+                            @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                            {
+                                <div class="carousel-item h-100 @(i == 0 ? "active" : "")">
+                                    <img src="@Model.ImageUrls[i]" class="d-block w-100 h-100" style="object-fit: contain;" alt="Foto @(i+1) de la propiedad" />
+                                </div>
+                            }
+                        </div>
+                        @if (Model.ImageUrls.Count > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5 bg-light" style="height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <p class="text-muted mb-0">Esta propiedad no contiene imágenes registradas.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Description -->
+            <div class="architect-card p-4 mb-4">
+                <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Descripción de la Propiedad</h4>
+                <p class="text-secondary fs-6 m-0" style="line-height: 1.7; text-align: justify;">@Model.Description</p>
+            </div>
+
+            <!-- Features details grid -->
+            <div class="architect-card p-4 mb-4">
+                <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Detalles Técnicos</h4>
+                <div class="row text-center bg-light g-0 py-3 border border-light">
+                    <div class="col-4 border-end border-light">
+                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold mb-1">Código único</small>
+                        <span class="fw-bold text-slate-dark font-monospace fs-5">@Model.Code</span>
+                    </div>
+                    <div class="col-4 border-end border-light">
+                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold mb-1">Precio sugerido</small>
+                        <span class="fw-bold text-slate-dark fs-5">@Model.Price.ToString("C") DOP</span>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold mb-1">Superficie útil</small>
+                        <span class="fw-bold text-slate-dark fs-5">@Model.LandSize.ToString("N0") m²</span>
+                    </div>
+                </div>
+
+                <div class="row text-center bg-light g-0 py-3 border-start border-end border-bottom border-light">
+                    <div class="col-6 border-end border-light">
+                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold mb-1">Habitaciones</small>
+                        <span class="fw-bold text-slate-dark fs-5">@Model.Rooms</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold mb-1">Baños completos</small>
+                        <span class="fw-bold text-slate-dark fs-5">@Model.Bathrooms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Improvements checklist -->
+            <div class="architect-card p-4">
+                <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Mejoras e Instalaciones Incluidas</h4>
+                @if (Model.ImprovementNames == null || Model.ImprovementNames.Count == 0)
+                {
+                    <p class="text-muted m-0">No se especificaron mejoras para esta propiedad.</p>
+                }
+                else
+                {
+                    <div class="row">
+                        @foreach (var name in Model.ImprovementNames)
+                        {
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <span class="text-brass me-2 fw-bold" style="font-size: 1.2rem;">✔</span>
+                                    <span class="text-slate-medium">@name</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right Side: Agent Info -->
+        <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="architect-card shadow-sm sticky-top" style="top: 20px;">
+                <div class="architect-header bg-slate-dark text-white p-4">
+                    <h5 class="fw-bold m-0 text-uppercase tracking-wider fs-6 text-brass">Contacto del Asesor</h5>
+                </div>
+                <div class="architect-body p-4 text-center">
+                    <div class="mb-3">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border" style="width: 80px; height: 80px;">
+                            <span class="text-slate-dark fw-bold fs-2 font-monospace">@Model.AgentName.Substring(0, Math.Min(2, Model.AgentName.Length)).ToUpper()</span>
+                        </div>
+                    </div>
+                    
+                    <h4 class="fw-bold text-slate-dark mb-1">@Model.AgentName</h4>
+                    <p class="text-muted fs-7 text-uppercase tracking-wider fw-semibold mb-3">Agente Inmobiliario Autorizado</p>
+                    
+                    <div class="border-top border-light pt-3 text-start">
+                        <div class="mb-2">
+                            <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Correo electrónico</small>
+                            <a href="mailto:@Model.AgentId" class="text-slate-medium fw-semibold fs-6">@Model.AgentId</a>
+                        </div>
+                        <div class="mb-0">
+                            <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Estatus de asesoría</small>
+                            <span class="badge bg-success text-white rounded-0 px-2 py-1 fs-8 mt-1">Activo</span>
+                        </div>
+                    </div>
+
+                    <div class="border-top border-light pt-4 mt-4">
+                        <a href="mailto:@Model.AgentId?subject=Interés en propiedad CÓD: @Model.Code" class="btn-brass w-100 py-2 fs-7 text-uppercase tracking-wider">Solicitar Información</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
