@@ -38,5 +38,17 @@ public class SavePropertyViewModel
 
     [Required(ErrorMessage = "Debe seleccionar al menos una mejora.")]
     [MinLength(1, ErrorMessage = "Debe seleccionar al menos una mejora.")]
-    public List<int> Improvements { get; set; } = new();
+    public List<int> SelectedImprovements { get; set; } = new();
+
+    // Image upload fields
+    public Microsoft.AspNetCore.Http.IFormFile? ImageOne { get; set; }
+    public Microsoft.AspNetCore.Http.IFormFile? ImageTwo { get; set; }
+    public Microsoft.AspNetCore.Http.IFormFile? ImageThree { get; set; }
+    public Microsoft.AspNetCore.Http.IFormFile? ImageFour { get; set; }
+
+    // Image URL fields (saved in Database)
+    public string? ImageOneUrl { get; set; }
+    public string? ImageTwoUrl { get; set; }
+    public string? ImageThreeUrl { get; set; }
+    public string? ImageFourUrl { get; set; }
 }

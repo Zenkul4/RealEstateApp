@@ -23,6 +23,7 @@ public static class ServiceRegistration
         services.AddScoped<ISaleTypeService, SaleTypeService>();
         services.AddScoped<IImprovementService, ImprovementService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IFavoritePropertyService, FavoritePropertyService>();
 
         return services;
     }

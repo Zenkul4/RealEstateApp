@@ -17,8 +17,6 @@
       },
       "AutoMapper/16.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Options": "10.0.0",
           "Microsoft.IdentityModel.JsonWebTokens": "8.14.0"
         },
         "runtime": {
@@ -44,45 +42,6 @@
           "lib/net10.0/MailKit.dll": {
             "assemblyVersion": "4.17.0.0",
             "fileVersion": "4.17.0.0"
-          }
-        }
-      },
-      "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.Logging.Abstractions/10.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Logging.Abstractions.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.Options/10.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Primitives": "10.0.0"
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Options.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        }
-      },
-      "Microsoft.Extensions.Primitives/10.0.0": {
-        "runtime": {
-          "lib/net10.0/Microsoft.Extensions.Primitives.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
           }
         }
       },
@@ -118,7 +77,6 @@
       },
       "Microsoft.IdentityModel.Tokens/8.14.0": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
           "Microsoft.IdentityModel.Logging": "8.14.0"
         },
         "runtime": {
@@ -130,29 +88,12 @@
       },
       "MimeKit/4.17.0": {
         "dependencies": {
-          "BouncyCastle.Cryptography": "2.6.2",
-          "System.Security.Cryptography.Pkcs": "10.0.0"
+          "BouncyCastle.Cryptography": "2.6.2"
         },
         "runtime": {
           "lib/net10.0/MimeKit.dll": {
             "assemblyVersion": "4.17.0.0",
             "fileVersion": "4.17.0.0"
-          }
-        }
-      },
-      "System.Security.Cryptography.Pkcs/10.0.0": {
-        "runtime": {
-          "lib/net10.0/System.Security.Cryptography.Pkcs.dll": {
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net10.0/System.Security.Cryptography.Pkcs.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "10.0.0.0",
-            "fileVersion": "10.0.25.52411"
           }
         }
       },
@@ -205,34 +146,6 @@
       "path": "mailkit/4.17.0",
       "hashPath": "mailkit.4.17.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-L3AdmZ1WOK4XXT5YFPEwyt0ep6l8lGIPs7F5OOBZc77Zqeo01Of7XXICy47628sdVl0v/owxYJTe86DTgFwKCA==",
-      "path": "microsoft.extensions.dependencyinjection.abstractions/10.0.0",
-      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Logging.Abstractions/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-FU/IfjDfwaMuKr414SSQNTIti/69bHEMb+QKrskRb26oVqpx3lNFXMjs/RC9ZUuhBhcwDM2BwOgoMw+PZ+beqQ==",
-      "path": "microsoft.extensions.logging.abstractions/10.0.0",
-      "hashPath": "microsoft.extensions.logging.abstractions.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Options/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-8oCAgXOow5XDrY9HaXX1QmH3ORsyZO/ANVHBlhLyCeWTH5Sg4UuqZeOTWJi6484M+LqSx0RqQXDJtdYy2BNiLQ==",
-      "path": "microsoft.extensions.options/10.0.0",
-      "hashPath": "microsoft.extensions.options.10.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Primitives/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w==",
-      "path": "microsoft.extensions.primitives/10.0.0",
-      "hashPath": "microsoft.extensions.primitives.10.0.0.nupkg.sha512"
-    },
     "Microsoft.IdentityModel.Abstractions/8.14.0": {
       "type": "package",
       "serviceable": true,
@@ -267,13 +180,6 @@
       "sha512": "sha512-h/KXsCreJf8RpR/PSAtlbvYtZFndp9N8Wn1Bs248AL7ITyhn+AiIY5bLTvt60tbN2mu6g8KadtBNWygTji2lqg==",
       "path": "mimekit/4.17.0",
       "hashPath": "mimekit.4.17.0.nupkg.sha512"
-    },
-    "System.Security.Cryptography.Pkcs/10.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-UPWqLSygJlFerRi9XNIuM0a1VC8gHUIufyP24xQ0sc+XimqUAEcjpOz9DhKpyDjH+5B/wO3RpC0KpkEeDj/ddg==",
-      "path": "system.security.cryptography.pkcs/10.0.0",
-      "hashPath": "system.security.cryptography.pkcs.10.0.0.nupkg.sha512"
     },
     "RealEstateApp.Core.Application/1.0.0": {
       "type": "project",

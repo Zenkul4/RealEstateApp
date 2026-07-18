@@ -1,0 +1,73 @@
+@model List<PropertyViewModel>
+@{
+    ViewData["Title"] = "Mis Propiedades";
+}
+
+<div class="container px-4 mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Mis Propiedades</h2>
+            <p class="text-muted m-0 fs-6">Administre y publique los inmuebles de su cartera de propiedades.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn-brass shadow-sm">Crear nueva propiedad</a>
+        </div>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="architect-card text-center py-5">
+            <p class="text-muted fs-5 mb-0">Aún no tiene propiedades registradas en su portafolio.</p>
+            <p class="text-muted fs-6 mt-1">Haga clic en el botón superior para publicar su primer inmueble.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="architect-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="architect-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-slate-dark text-white rounded-0 px-3 py-2 text-uppercase font-monospace fs-7">CÓD: @property.Code</span>
+                                <span class="text-brass fw-semibold fs-7">@property.SaleTypeName</span>
+                            </div>
+                            <div class="architect-body">
+                                <h4 class="fw-bold text-slate-dark mb-2">@property.Price.ToString("C") DOP</h4>
+                                <h6 class="text-muted mb-3">@property.PropertyTypeName</h6>
+                                
+                                <p class="text-secondary fs-6 mb-4 text-truncate">@property.Description</p>
+                                
+                                <div class="row text-center bg-light g-0 py-2 border-top border-bottom border-light">
+                                    <div class="col-4 border-end border-light">
+                                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Hab.</small>
+                                        <span class="fw-bold text-slate-medium">@property.Rooms</span>
+                                    </div>
+                                    <div class="col-4 border-end border-light">
+                                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Baños</small>
+                                        <span class="fw-bold text-slate-medium">@property.Bathrooms</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block text-uppercase fs-8 fw-semibold">Tamaño</small>
+                                        <span class="fw-bold text-slate-medium">@property.LandSize.ToString("N0") m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="architect-body pt-0 mt-auto">
+                            <div class="d-flex justify-content-between align-items-center pt-3">
+                                <a asp-action="Edit" asp-route-id="@property.Id" class="btn-outline-brass w-50 text-center me-2 py-2">Editar</a>
+                                <form asp-action="Delete" asp-route-id="@property.Id" method="post" class="w-50" onsubmit="return confirm('¿Está seguro de que desea eliminar permanentemente esta propiedad y todas sus fotos?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger w-100 rounded-0 py-2">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

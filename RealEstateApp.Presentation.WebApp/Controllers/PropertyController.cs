@@ -1,0 +1,200 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using RealEstateApp.Core.Application.Interfaces;
+using RealEstateApp.Core.Application.Interfaces.Services;
+using RealEstateApp.Core.Application.ViewModels.Properties;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace RealEstateApp.Presentation.WebApp.Controllers;
+
+public class PropertyController : Controller
+{
+    private readonly IPropertyService _propertyService;
+    private readonly IPropertyTypeService _propertyTypeService;
+    private readonly ISaleTypeService _saleTypeService;
+    private readonly IImprovementService _improvementService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public PropertyController(
+        IPropertyService propertyService,
+        IPropertyTypeService propertyTypeService,
+        ISaleTypeService saleTypeService,
+        IImprovementService improvementService,
+        IWebHostEnvironment webHostEnvironment)
+    {
+        _propertyService = propertyService;
+        _propertyTypeService = propertyTypeService;
+        _saleTypeService = saleTypeService;
+        _improvementService = improvementService;
+        _webHostEnvironment = webHostEnvironment;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        // Por ahora, maneja un ID de agente dummy o lee el autenticado si está disponible
+        string agentId = "dummy-agent-id";
+        
+        var properties = await _propertyService.GetAllWithInclude();
+        // Filtramos para mostrar solo las propiedades de este agente
+        var agentProperties = properties.Where(p => p.AgentId == agentId).ToList();
+        return View(agentProperties);
+    }
+
+    public async Task<IActionResult> Create()
+    {
+        await LoadViewBags();
+        var vm = new SavePropertyViewModel
+        {
+            AgentId = "dummy-agent-id" // Asignación automática del agente
+        };
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(SavePropertyViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            await LoadViewBags();
+            return View(vm);
+        }
+
+        // Validación de negocio: Debe cargarse al menos una imagen
+        if (vm.ImageOne == null && vm.ImageTwo == null && vm.ImageThree == null && vm.ImageFour == null)
+        {
+            ModelState.AddModelError(string.Empty, "Debe cargar al menos una imagen de la propiedad.");
+            await LoadViewBags();
+            return View(vm);
+        }
+
+        vm.AgentId = "dummy-agent-id";
+        
+        // Creamos la propiedad primero para obtener su ID de base de datos
+        var result = await _propertyService.Add(vm);
+
+        // Subimos las imágenes físicamente
+        result.ImageOneUrl = UploadFile(vm.ImageOne, result.Id);
+        result.ImageTwoUrl = UploadFile(vm.ImageTwo, result.Id);
+        result.ImageThreeUrl = UploadFile(vm.ImageThree, result.Id);
+        result.ImageFourUrl = UploadFile(vm.ImageFour, result.Id);
+
+        // Actualizamos las URL de las imágenes en el registro
+        await _propertyService.Update(result, result.Id);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var vm = await _propertyService.GetByIdSaveViewModel(id);
+        await LoadViewBags();
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(SavePropertyViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            await LoadViewBags();
+            return View(vm);
+        }
+
+        // Validación: Debe mantenerse al menos una imagen
+        var currentProperty = await _propertyService.GetByIdSaveViewModel(vm.Id);
+        
+        // Comprobamos si tiene al menos una imagen activa tras el edit
+        bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentProperty.ImageOneUrl);
+        bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentProperty.ImageTwoUrl);
+        bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentProperty.ImageThreeUrl);
+        bool hasImageFour = vm.ImageFour != null || !string.IsNullOrEmpty(currentProperty.ImageFourUrl);
+
+        if (!hasImageOne && !hasImageTwo && !hasImageThree && !hasImageFour)
+        {
+            ModelState.AddModelError(string.Empty, "La propiedad debe mantener al menos una imagen.");
+            await LoadViewBags();
+            return View(vm);
+        }
+
+        // Subimos las imágenes nuevas o mantenemos las actuales
+        vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentProperty.ImageOneUrl);
+        vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentProperty.ImageTwoUrl);
+        vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentProperty.ImageThreeUrl);
+        vm.ImageFourUrl = UploadFile(vm.ImageFour, vm.Id, currentProperty.ImageFourUrl);
+
+        await _propertyService.Update(vm, vm.Id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _propertyService.Delete(id);
+        DeletePropertyDirectory(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    private async Task LoadViewBags()
+    {
+        var propertyTypes = await _propertyTypeService.GetAllWithInclude();
+        var saleTypes = await _saleTypeService.GetAllWithInclude();
+        var improvements = await _improvementService.GetAllWithInclude();
+
+        ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name");
+        ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name");
+        ViewBag.Improvements = improvements;
+    }
+
+    private string UploadFile(IFormFile? file, int id, string? currentUrl = null)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return currentUrl ?? string.Empty;
+        }
+
+        // Delete existing file if we are replacing it
+        if (!string.IsNullOrEmpty(currentUrl))
+        {
+            string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, currentUrl.TrimStart('/'));
+            if (System.IO.File.Exists(oldFilePath))
+            {
+                System.IO.File.Delete(oldFilePath);
+            }
+        }
+
+        string basePath = $"/images/properties/{id}";
+        string path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "properties", id.ToString());
+
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        string filePath = Path.Combine(path, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            file.CopyTo(stream);
+        }
+
+        return $"{basePath}/{fileName}";
+    }
+
+    private void DeletePropertyDirectory(int id)
+    {
+        string path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "properties", id.ToString());
+        if (Directory.Exists(path))
+        {
+            Directory.Delete(path, true);
+        }
+    }
+}
