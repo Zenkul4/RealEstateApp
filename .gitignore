@@ -57,3 +57,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# VS Code C# Dev Tools - Auto-generated runners
+.vscodecsdt/Runners/

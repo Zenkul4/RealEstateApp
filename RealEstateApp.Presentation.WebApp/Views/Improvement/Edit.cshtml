@@ -1,0 +1,44 @@
+@model SaveImprovementViewModel
+@{
+    ViewData["Title"] = "Editar Mejora";
+}
+
+<div class="container px-4 mt-2">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="architect-card mt-3">
+                <div class="architect-header bg-slate-dark text-white p-4">
+                    <h4 class="fw-bold m-0 text-uppercase tracking-wider fs-5"><span class="text-brass">Editar</span> Mejora de Propiedad</h4>
+                    <p class="text-muted m-0 fs-6 mt-1">Modifique los detalles de la característica de propiedad seleccionada.</p>
+                </div>
+                <div class="architect-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Nombre de la Mejora</label>
+                            <input asp-for="Name" class="form-control rounded-0 py-2 border-slate" placeholder="Ej. Piscina, Terraza" />
+                            <span asp-validation-for="Name" class="text-danger fs-6 mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label text-uppercase fs-7 tracking-wide fw-bold">Descripción Corta</label>
+                            <textarea asp-for="Description" class="form-control rounded-0 py-2 border-slate" rows="4" placeholder="Describa brevemente en qué consiste esta mejora y sus beneficios..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger fs-6 mt-1 d-block"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn-outline-slate">Volver atrás</a>
+                            <button type="submit" class="btn-brass">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
