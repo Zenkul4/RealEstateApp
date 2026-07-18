@@ -21,7 +21,7 @@ public static class ServiceRegistration
     {
         services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer(
-                configuration.GetConnectionString("IdentityConnection"),
+                configuration.GetConnectionString("DefaultConnection"),
                 m => m.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
 
         services.AddIdentity<ApplicationUser, IdentityRole>()

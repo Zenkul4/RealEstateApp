@@ -1,3 +1,17 @@
+/* Color Palette & Tokens */
+:root {
+  --color-slate-dark: #0f172a;
+  --color-slate-medium: #1e293b;
+  --color-slate-light: #475569;
+  --color-brass: #b59a57;
+  --color-brass-dark: #9a8043;
+  --color-bg: #f8fafc;
+  --color-card-bg: #ffffff;
+  --color-border: #e2e8f0;
+  --font-display: 'Playfair Display', serif;
+  --font-sans: 'Outfit', sans-serif;
+}
+
 html {
   font-size: 14px;
 }
@@ -8,24 +22,155 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-slate-dark);
   margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Header & Navbar */
+.bg-slate-dark {
+  background-color: var(--color-slate-dark) !important;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.text-brass {
+  color: var(--color-brass) !important;
+}
+
+.navbar-brand {
+  font-family: var(--font-sans);
+  letter-spacing: 0.05em;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #94a3b8 !important;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--color-brass) !important;
+}
+
+/* Buttons */
+.btn-brass {
+  background-color: var(--color-brass);
+  color: #fff;
+  border: 1px solid var(--color-brass);
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-brass:hover {
+  background-color: var(--color-brass-dark);
+  border-color: var(--color-brass-dark);
+  color: #fff;
+}
+
+.btn-outline-brass {
+  background-color: transparent;
+  color: var(--color-brass);
+  border: 1px solid var(--color-brass);
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-outline-brass:hover {
+  background-color: var(--color-brass);
+  color: #fff;
+}
+
+.btn-outline-slate {
+  background-color: transparent;
+  color: var(--color-slate-medium);
+  border: 1px solid var(--color-slate-medium);
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-outline-slate:hover {
+  background-color: var(--color-slate-medium);
+  color: #fff;
+}
+
+/* Cards & Containers */
+.architect-card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+.architect-header {
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.25rem 1.5rem;
+}
+
+.architect-header h3, .architect-header h4 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--color-slate-medium);
+  margin-bottom: 0;
+}
+
+.architect-body {
+  padding: 1.5rem;
+}
+
+/* Table Styling */
+.table-architect {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.table-architect th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--color-slate-light);
+  border-bottom: 2px solid var(--color-border);
+  padding: 1rem;
+}
+
+.table-architect td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-slate-medium);
+}
+
+.table-architect tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table-architect tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Forms */
+.form-control:focus {
+  border-color: var(--color-brass);
+  box-shadow: 0 0 0 0.15rem rgba(181, 154, 87, 0.25);
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--color-slate-medium);
+  margin-bottom: 0.5rem;
 }

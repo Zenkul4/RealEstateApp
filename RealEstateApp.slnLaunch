@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "RealEstateApp.Presentation.WebApi\\RealEstateApp.Presentation.WebApi.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "RealEstateApp.Presentation.WebApp\\RealEstateApp.Presentation.WebApp.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
