@@ -1,0 +1,14 @@
+@{
+    var success = ViewBag.Success == true;
+    ViewData["Title"] = success ? "Cuenta activada" : "Enlace inválido";
+}
+
+<section class="status-shell @(success ? "" : "status-shell--error")">
+    <span class="status-mark">@(success ? "✓" : "!")</span>
+    <span class="auth-eyebrow">Confirmación de correo</span>
+    <h1>@(success ? "Tu cuenta está activa." : "No pudimos validar el enlace.")</h1>
+    <p>@(success
+        ? "Ya puedes iniciar sesión y comenzar a guardar propiedades."
+        : "El enlace puede haber vencido, estar incompleto o haber sido utilizado anteriormente.")</p>
+    <a asp-action="Login" class="auth-primary">@(success ? "Iniciar sesión" : "Volver al acceso") <span aria-hidden="true">→</span></a>
+</section>

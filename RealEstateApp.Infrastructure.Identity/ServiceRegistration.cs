@@ -17,7 +17,58 @@ namespace RealEstateApp.Infrastructure.Identity;
 
 public static class ServiceRegistration
 {
-    public static void AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddWebAppIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        AddIdentityCore(services, configuration);
+
+        services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/Account/Login";
+            options.AccessDeniedPath = "/Account/AccessDenied";
+            options.ExpireTimeSpan = TimeSpan.FromHours(8);
+            options.SlidingExpiration = true;
+        });
+    }
+
+    public static void AddApiIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        AddIdentityCore(services, configuration);
+
+        var jwtKey = configuration["JWTSettings:Key"];
+        if (string.IsNullOrWhiteSpace(jwtKey))
+        {
+            throw new InvalidOperationException("JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
+        }
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = true;
+            options.SaveToken = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = configuration["JWTSettings:Issuer"],
+                ValidAudience = configuration["JWTSettings:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = context => WriteJsonErrorAsync(context.Response, 401, "No está autorizado para acceder a este recurso.", context.HandleResponse),
+                OnForbidden = context => WriteJsonErrorAsync(context.Response, 403, "Acceso denegado. No tiene permisos para realizar esta acción.")
+            };
+        });
+    }
+
+    private static void AddIdentityCore(IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer(
@@ -29,52 +80,13 @@ public static class ServiceRegistration
             .AddDefaultTokenProviders();
 
         services.AddTransient<IAccountService, AccountService>();
+    }
 
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = false;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidIssuer = configuration["JWTSettings:Issuer"],
-                ValidAudience = configuration["JWTSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:Key"]!))
-            };
-
-            options.Events = new JwtBearerEvents()
-            {
-                OnAuthenticationFailed = c =>
-                {
-                    c.NoResult();
-                    c.Response.StatusCode = 500;
-                    c.Response.ContentType = "text/plain";
-                    return c.Response.WriteAsync(c.Exception.ToString());
-                },
-                OnChallenge = c =>
-                {
-                    c.HandleResponse();
-                    c.Response.StatusCode = 401;
-                    c.Response.ContentType = "application/json";
-                    var result = "{\"HasError\": true, \"Error\": \"No está autorizado para acceder a este recurso.\"}";
-                    return c.Response.WriteAsync(result);
-                },
-                OnForbidden = c =>
-                {
-                    c.Response.StatusCode = 403;
-                    c.Response.ContentType = "application/json";
-                    var result = "{\"HasError\": true, \"Error\": \"Acceso denegado. No tiene permisos para realizar esta acción.\"}";
-                    return c.Response.WriteAsync(result);
-                }
-            };
-        });
+    private static Task WriteJsonErrorAsync(HttpResponse response, int statusCode, string message, Action? beforeWrite = null)
+    {
+        beforeWrite?.Invoke();
+        response.StatusCode = statusCode;
+        response.ContentType = "application/json";
+        return response.WriteAsJsonAsync(new { hasError = true, error = message });
     }
 }

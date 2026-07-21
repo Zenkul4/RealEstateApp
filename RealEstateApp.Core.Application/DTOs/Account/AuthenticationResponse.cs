@@ -10,4 +10,5 @@ public class AuthenticationResponse
     public bool HasError { get; set; }
     public string? Error { get; set; }
     public string Token { get; set; } = string.Empty;
+    public DateTime? ExpiresAtUtc { get; set; }
 }

@@ -19,6 +19,7 @@ public class PropertyViewModel
     public string PropertyTypeName { get; set; } = null!;
     public int SaleTypeId { get; set; }
     public string SaleTypeName { get; set; } = null!;
+    public string Status { get; set; } = string.Empty;
     public System.Collections.Generic.List<string> ImageUrls { get; set; } = new();
     public System.Collections.Generic.List<string> ImprovementNames { get; set; } = new();
 }
