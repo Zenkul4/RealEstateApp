@@ -44,8 +44,20 @@ public class GenericRepository<T> : IGenericRepositoryAsync<T> where T : class
 
     public virtual async Task DeleteAsync(T entity)
     {
-        _dbContext.Set<T>().Remove(entity);
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            var entry = _dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                _dbContext.Set<T>().Attach(entity);
+            }
+            _dbContext.Set<T>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            Console.WriteLine($"DbUpdateConcurrencyException caught during DeleteAsync: {ex.Message}");
+        }
     }
 
     public virtual async Task<T?> GetByIdWithIncludeAsync(int id, params Expression<Func<T, object>>[] includes)

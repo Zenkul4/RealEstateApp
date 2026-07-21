@@ -40,8 +40,16 @@ public class SaleTypeController : Controller
 
     public async Task<IActionResult> Edit(int id)
     {
-        var vm = await _saleTypeService.GetByIdSaveViewModel(id);
-        return View(vm);
+        try
+        {
+            var vm = await _saleTypeService.GetByIdSaveViewModel(id);
+            return View(vm);
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "El tipo de venta solicitado no existe o ya fue eliminado.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -53,14 +61,31 @@ public class SaleTypeController : Controller
             return View(vm);
         }
 
-        await _saleTypeService.Update(vm, vm.Id);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _saleTypeService.Update(vm, vm.Id);
+            TempData["SuccessMessage"] = "Tipo de venta actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "No se puede editar un tipo de venta que no existe o ya fue eliminado.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     public async Task<IActionResult> Delete(int id)
     {
-        var vm = await _saleTypeService.GetByIdSaveViewModel(id);
-        return View(vm);
+        try
+        {
+            var vm = await _saleTypeService.GetByIdSaveViewModel(id);
+            return View(vm);
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "El tipo de venta ya no existe o ya fue eliminado.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -68,7 +93,15 @@ public class SaleTypeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeletePost(int id)
     {
-        await _saleTypeService.Delete(id);
+        try
+        {
+            await _saleTypeService.Delete(id);
+            TempData["SuccessMessage"] = "Tipo de venta eliminado correctamente.";
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "El tipo de venta ya ha sido eliminado.";
+        }
         return RedirectToAction(nameof(Index));
     }
 }
