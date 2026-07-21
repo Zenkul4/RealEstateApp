@@ -8,6 +8,8 @@ using RealEstateApp.Core.Application.DTOs.Email;
 using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Core.Application.ViewModels.Account;
 
+using Microsoft.Extensions.Logging;
+
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
 public class AccountController : Controller
@@ -15,15 +17,18 @@ public class AccountController : Controller
     private readonly IAccountService _accountService;
     private readonly IEmailService _emailService;
     private readonly IFileStorageService _fileStorageService;
+    private readonly ILogger<AccountController> _logger;
 
     public AccountController(
         IAccountService accountService,
         IEmailService emailService,
-        IFileStorageService fileStorageService)
+        IFileStorageService fileStorageService,
+        ILogger<AccountController> logger)
     {
         _accountService = accountService;
         _emailService = emailService;
         _fileStorageService = fileStorageService;
+        _logger = logger;
     }
 
     [AllowAnonymous]
@@ -95,6 +100,9 @@ public class AccountController : Controller
             return View(viewModel);
         }
 
+        var origin = $"{Request.Scheme}://{Request.Host}";
+        _logger.LogInformation("[DEBUG_CONTROLLER] POST Register iniciado para {Email}. Origen generado: {Origin}", viewModel.Email, origin);
+
         var response = await _accountService.RegisterBasicUserAsync(new RegisterRequest
         {
             FirstName = viewModel.FirstName.Trim(),
@@ -107,22 +115,28 @@ public class AccountController : Controller
             ConfirmPassword = viewModel.ConfirmPassword,
             PhotoUrl = photoUrl,
             UserType = viewModel.UserType
-        });
+        }, origin);
+
+        _logger.LogInformation("[DEBUG_CONTROLLER] Respuesta devuelta por RegisterBasicUserAsync -> HasError: {HasError}, UserId: {UserId}, Email: {Email}, HasToken: {HasToken}",
+            response.HasError, response.UserId, response.Email, !string.IsNullOrEmpty(response.EmailConfirmationToken));
 
         if (response.HasError)
         {
+            _logger.LogWarning("[DEBUG_CONTROLLER] Error en el registro de usuario: {Error}", response.Error);
             ModelState.AddModelError(string.Empty, response.Error!);
             return View(viewModel);
         }
 
         if (viewModel.UserType == UserType.Client)
         {
-            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(response.EmailConfirmationToken));
             var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new
             {
                 userId = response.UserId,
-                token = encodedToken
+                token = response.EmailConfirmationToken
             }, Request.Scheme)!;
+
+            _logger.LogInformation("[DEBUG_CONTROLLER] CallbackUrl generado para activación: {CallbackUrl}", callbackUrl);
+            _logger.LogInformation("[DEBUG_CONTROLLER] Llamando a _emailService.SendAsync para enviar correo de activación a {Email}...", response.Email);
 
             await _emailService.SendAsync(new EmailRequest
             {
@@ -130,6 +144,8 @@ public class AccountController : Controller
                 Subject = "Activa tu cuenta de RealEstateApp",
                 HtmlBody = BuildActivationEmail(viewModel.FirstName, callbackUrl)
             }, cancellationToken);
+
+            _logger.LogInformation("[DEBUG_CONTROLLER] Envío de correo completado exitosamente sin excepciones.");
         }
 
         return RedirectToAction(nameof(RegistrationPending), new { accountType = viewModel.UserType.ToString() });

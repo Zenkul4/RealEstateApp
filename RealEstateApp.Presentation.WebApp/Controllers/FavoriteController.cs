@@ -19,7 +19,7 @@ public class FavoriteController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "dummy-client-id";
+        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         var favorites = await _favoritePropertyService.GetFavoritesByClientAsync(clientId);
         return View(favorites);
     }
@@ -28,7 +28,7 @@ public class FavoriteController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(int propertyId)
     {
-        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "dummy-client-id";
+        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         var isFav = await _favoritePropertyService.IsFavoriteAsync(propertyId, clientId);
 
         if (isFav)

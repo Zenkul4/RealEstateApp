@@ -1,0 +1,82 @@
+@model List<RealEstateApp.Core.Application.ViewModels.Account.UserViewModel>
+@{
+    ViewData["Title"] = "Agentes Inmobiliarios";
+}
+
+<div class="container px-4 mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Nuestros Asesores</h2>
+            <p class="text-muted m-0 fs-6">Encuentre un asesor inmobiliario autorizado para guiarle en su adquisición.</p>
+        </div>
+        <div class="bg-light px-3 py-2 border border-light">
+            <span class="fs-7 text-uppercase tracking-wider fw-bold text-muted">Asesores Activos:</span>
+            <span class="fw-bold text-slate-dark fs-6 font-monospace">@Model.Count</span>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="architect-card p-4 mb-4">
+        <form method="get" asp-action="Agents" class="row g-3 align-items-end">
+            <div class="col-md-8 col-sm-12">
+                <label for="nameSearch" class="form-label text-uppercase fs-8 tracking-wider fw-bold text-muted">Buscar por Nombre o Apellido</label>
+                <input type="text" id="nameSearch" name="name" value="@ViewBag.SearchName" class="form-control rounded-0 border-slate py-2" placeholder="Ej. Juan Pérez..." />
+            </div>
+            <div class="col-md-4 col-sm-12 d-flex gap-2">
+                <button type="submit" class="btn-brass w-100 py-2 text-uppercase tracking-wider fs-7">Buscar</button>
+                @if (!string.IsNullOrEmpty(ViewBag.SearchName))
+                {
+                    <a asp-action="Agents" class="btn btn-outline-secondary rounded-0 w-100 py-2 text-uppercase tracking-wider fs-7 d-flex align-items-center justify-content-center">Limpiar</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="architect-card text-center py-5">
+            <p class="text-muted fs-5 mb-0">No se encontraron agentes activos con el nombre ingresado.</p>
+            @if (!string.IsNullOrEmpty(ViewBag.SearchName))
+            {
+                <a asp-action="Agents" class="btn btn-link text-brass fw-semibold mt-2">Ver todos los agentes</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var agent in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="architect-card h-100 d-flex flex-column justify-content-between p-4">
+                        <div class="text-center mb-4">
+                            <div class="mb-3 d-flex justify-content-center">
+                                @if (!string.IsNullOrEmpty(agent.PhotoUrl))
+                                {
+                                    <img src="@agent.PhotoUrl" alt="@agent.FullName" class="rounded-circle border border-brass shadow-sm object-fit-cover" style="width: 100px; height: 100px;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center border" style="width: 100px; height: 100px;">
+                                        <span class="text-slate-dark fw-bold fs-1 font-monospace">@(!string.IsNullOrEmpty(agent.FullName) ? agent.FullName.Substring(0, Math.Min(2, agent.FullName.Length)).ToUpper() : "AG")</span>
+                                    </div>
+                                }
+                            </div>
+                            <h5 class="fw-bold text-slate-dark mb-1">@(agent.FullName ?? "Asesor Autorizado")</h5>
+                            <p class="text-muted fs-8 text-uppercase tracking-wider fw-semibold mb-3">Agente Inmobiliario</p>
+                            
+                            <div class="bg-light py-2 border-top border-bottom border-light mb-3">
+                                <span class="d-block fs-8 text-muted text-uppercase tracking-wider fw-bold">Propiedades Disponibles</span>
+                                <span class="badge bg-brass text-white rounded-0 px-3 py-2 font-monospace fs-7 mt-1">@agent.ActivePropertiesCount</span>
+                            </div>
+                        </div>
+
+                        <div class="border-top border-light pt-3 mt-auto">
+                            <a asp-action="AgentProperties" asp-route-agentId="@agent.Id" class="btn btn-outline-brass rounded-0 w-100 py-2 text-uppercase tracking-wider fs-8">Ver Portafolio</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -20,12 +20,19 @@ builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-await using (var scope = app.Services.CreateAsyncScope())
+try
 {
-    await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
-    await scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.MigrateAsync();
+    await using (var scope = app.Services.CreateAsyncScope())
+    {
+        await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
+        await scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.MigrateAsync();
+    }
+    await DefaultRolesAndUsers.SeedAsync(app.Services, builder.Configuration);
 }
-await DefaultRolesAndUsers.SeedAsync(app.Services, builder.Configuration);
+catch (System.Exception ex)
+{
+    System.Console.WriteLine($"[CRITICAL] Error durante la migración o siembra de la base de datos: {ex.Message}");
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

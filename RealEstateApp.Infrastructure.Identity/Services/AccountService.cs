@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using RealEstateApp.Core.Application.DTOs.Account;
 using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Infrastructure.Identity.Models;
@@ -19,15 +21,18 @@ public class AccountService : IAccountService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AccountService> _logger;
 
     public AccountService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<AccountService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
@@ -63,10 +68,17 @@ public class AccountService : IAccountService
 
         claims.AddRange(rolesList.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:Key"]!));
+        var key = _configuration["JWTSettings:Key"] ?? "SuperSecretKeyForDevelopmentRealEstateAppIdentity";
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
-        var expiresAtUtc = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JWTSettings:DurationInMinutes"]));
+        var durationStr = _configuration["JWTSettings:DurationInMinutes"];
+        double duration = 60;
+        if (double.TryParse(durationStr, out double parsedDuration))
+        {
+            duration = parsedDuration;
+        }
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(duration);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -125,37 +137,50 @@ public class AccountService : IAccountService
 
     public Task SignOutWebAppAsync() => _signInManager.SignOutAsync();
 
-    public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request)
+    public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request, string? origin = null)
     {
-        return await RegisterUserAsync(request, isEmailConfirmed: false);
+        _logger.LogInformation("[DEBUG_ACCOUNT] RegisterBasicUserAsync invocado para {Email}. Origen inicial recibido: {Origin}", request.Email, origin);
+        if (string.IsNullOrWhiteSpace(origin))
+        {
+            origin = "https://localhost:7109";
+            _logger.LogInformation("[DEBUG_ACCOUNT] Aplicado fallback de origen por defecto: {Origin}", origin);
+        }
+        return await RegisterUserAsync(request, isEmailConfirmed: false, origin);
     }
 
     public async Task<RegisterResponse> RegisterAdminOrDeveloperAsync(RegisterRequest request)
     {
+        _logger.LogInformation("[DEBUG_ACCOUNT] RegisterAdminOrDeveloperAsync invocado para {Email}", request.Email);
         return await RegisterUserAsync(request, isEmailConfirmed: true);
     }
 
-    private async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, bool isEmailConfirmed)
+    private async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, bool isEmailConfirmed, string? origin = null)
     {
+        _logger.LogInformation("[DEBUG_ACCOUNT] RegisterUserAsync iniciado. UserType: {UserType}, IsEmailConfirmed: {IsEmailConfirmed}, Origin: {Origin}", request.UserType, isEmailConfirmed, origin);
+
         if (request.Password != request.ConfirmPassword)
         {
+            _logger.LogWarning("[DEBUG_ACCOUNT] Fallo de validación: Contraseña y confirmación no coinciden.");
             return new RegisterResponse { HasError = true, Error = "La contraseña y la confirmación no coinciden." };
         }
 
         var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
         if (userWithSameEmail != null)
         {
+            _logger.LogWarning("[DEBUG_ACCOUNT] Fallo de registro: Ya existe usuario con correo {Email}", request.Email);
             return new RegisterResponse { HasError = true, Error = "Ya existe un usuario registrado con este correo electrónico." };
         }
 
         var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
         if (userWithSameUserName != null)
         {
+            _logger.LogWarning("[DEBUG_ACCOUNT] Fallo de registro: Ya existe usuario con UserName {UserName}", request.UserName);
             return new RegisterResponse { HasError = true, Error = "Ya existe un usuario registrado con este nombre de usuario." };
         }
 
         if (_userManager.Users.Any(user => user.Cedula == request.Cedula))
         {
+            _logger.LogWarning("[DEBUG_ACCOUNT] Fallo de registro: Ya existe usuario con Cédula {Cedula}", request.Cedula);
             return new RegisterResponse { HasError = true, Error = "Ya existe un usuario registrado con esta cédula." };
         }
 
@@ -171,20 +196,32 @@ public class AccountService : IAccountService
             PhoneNumber = request.Phone
         };
 
+        _logger.LogInformation("[DEBUG_ACCOUNT] Creando usuario en Identity: {UserName} ({Email})...", user.UserName, user.Email);
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (result.Succeeded)
         {
-            var roleResult = await _userManager.AddToRoleAsync(user, MapUserTypeToRole(request.UserType));
+            _logger.LogInformation("[DEBUG_ACCOUNT] Usuario creado exitosamente con UserId: {UserId}", user.Id);
+            var roleName = MapUserTypeToRole(request.UserType);
+            var roleResult = await _userManager.AddToRoleAsync(user, roleName);
             if (!roleResult.Succeeded)
             {
+                _logger.LogError("[DEBUG_ACCOUNT] Error asignando rol {Role} al usuario {UserId}", roleName, user.Id);
                 await _userManager.DeleteAsync(user);
                 return new RegisterResponse { HasError = true, Error = "No fue posible asignar el rol seleccionado." };
             }
+            _logger.LogInformation("[DEBUG_ACCOUNT] Rol {Role} asignado correctamente.", roleName);
 
-            var confirmationToken = request.UserType == UserType.Client
-                ? await _userManager.GenerateEmailConfirmationTokenAsync(user)
-                : string.Empty;
+            var confirmationToken = string.Empty;
+            if (request.UserType == UserType.Client)
+            {
+                _logger.LogInformation("[DEBUG_ACCOUNT] Generando token de confirmación de email con GenerateEmailConfirmationTokenAsync...");
+                var rawToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                _logger.LogInformation("[DEBUG_ACCOUNT] Raw Token generado exitosamente (Length: {Length})", rawToken.Length);
+
+                confirmationToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
+                _logger.LogInformation("[DEBUG_ACCOUNT] Token codificado con WebEncoders.Base64UrlEncode -> Token: {Token}", confirmationToken);
+            }
 
             return new RegisterResponse
             {

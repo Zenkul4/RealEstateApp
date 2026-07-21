@@ -38,7 +38,7 @@ public class PropertyController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
         
         var properties = await _propertyService.GetAllWithInclude();
         var agentProperties = properties.Where(p => p.AgentId == agentId).ToList();
@@ -50,7 +50,7 @@ public class PropertyController : Controller
         await LoadViewBags();
         var vm = new SavePropertyViewModel
         {
-            AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id"
+            AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
         };
         return View(vm);
     }
@@ -63,10 +63,10 @@ public class PropertyController : Controller
         {
             ModelState.AddModelError(string.Empty, "Los datos de la propiedad son nulos o inválidos.");
             await LoadViewBags();
-            return View(new SavePropertyViewModel { AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id" });
+            return View(new SavePropertyViewModel { AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value });
         }
 
-        vm.AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+        vm.AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
 
         if (!ModelState.IsValid)
         {
@@ -99,7 +99,7 @@ public class PropertyController : Controller
         try
         {
             var vm = await _propertyService.GetByIdSaveViewModel(id);
-            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
             if (vm.AgentId != agentId)
             {
                 TempData["ErrorMessage"] = "No tiene permisos para editar esta propiedad.";
@@ -125,7 +125,7 @@ public class PropertyController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
         vm.AgentId = agentId;
 
         if (!ModelState.IsValid)
@@ -179,7 +179,7 @@ public class PropertyController : Controller
         try
         {
             var vm = await _propertyService.GetByIdSaveViewModel(id);
-            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
             if (vm.AgentId != agentId)
             {
                 TempData["ErrorMessage"] = "No tiene permisos para eliminar esta propiedad.";
