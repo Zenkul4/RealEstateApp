@@ -94,53 +94,86 @@ public class PropertyController : Controller
 
     public async Task<IActionResult> Edit(int id)
     {
-        var vm = await _propertyService.GetByIdSaveViewModel(id);
-        await LoadViewBags();
-        return View(vm);
+        try
+        {
+            var vm = await _propertyService.GetByIdSaveViewModel(id);
+            await LoadViewBags();
+            return View(vm);
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "La propiedad solicitada no existe o ya fue eliminada.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(SavePropertyViewModel vm)
     {
+        if (vm == null)
+        {
+            TempData["ErrorMessage"] = "Los datos de la propiedad son nulos o inválidos.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        vm.AgentId = "dummy-agent-id";
+
         if (!ModelState.IsValid)
         {
             await LoadViewBags();
             return View(vm);
         }
 
-        // Validación: Debe mantenerse al menos una imagen
-        var currentProperty = await _propertyService.GetByIdSaveViewModel(vm.Id);
-        
-        // Comprobamos si tiene al menos una imagen activa tras el edit
-        bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentProperty.ImageOneUrl);
-        bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentProperty.ImageTwoUrl);
-        bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentProperty.ImageThreeUrl);
-        bool hasImageFour = vm.ImageFour != null || !string.IsNullOrEmpty(currentProperty.ImageFourUrl);
-
-        if (!hasImageOne && !hasImageTwo && !hasImageThree && !hasImageFour)
+        try
         {
-            ModelState.AddModelError(string.Empty, "La propiedad debe mantener al menos una imagen.");
-            await LoadViewBags();
-            return View(vm);
+            // Validación: Debe mantenerse al menos una imagen
+            var currentProperty = await _propertyService.GetByIdSaveViewModel(vm.Id);
+            
+            // Comprobamos si tiene al menos una imagen activa tras el edit
+            bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentProperty.ImageOneUrl);
+            bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentProperty.ImageTwoUrl);
+            bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentProperty.ImageThreeUrl);
+            bool hasImageFour = vm.ImageFour != null || !string.IsNullOrEmpty(currentProperty.ImageFourUrl);
+
+            if (!hasImageOne && !hasImageTwo && !hasImageThree && !hasImageFour)
+            {
+                ModelState.AddModelError(string.Empty, "La propiedad debe mantener al menos una imagen.");
+                await LoadViewBags();
+                return View(vm);
+            }
+
+            // Subimos las imágenes nuevas o mantenemos las actuales
+            vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentProperty.ImageOneUrl);
+            vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentProperty.ImageTwoUrl);
+            vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentProperty.ImageThreeUrl);
+            vm.ImageFourUrl = UploadFile(vm.ImageFour, vm.Id, currentProperty.ImageFourUrl);
+
+            await _propertyService.Update(vm, vm.Id);
+            TempData["SuccessMessage"] = "Propiedad actualizada correctamente.";
+            return RedirectToAction(nameof(Index));
         }
-
-        // Subimos las imágenes nuevas o mantenemos las actuales
-        vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentProperty.ImageOneUrl);
-        vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentProperty.ImageTwoUrl);
-        vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentProperty.ImageThreeUrl);
-        vm.ImageFourUrl = UploadFile(vm.ImageFour, vm.Id, currentProperty.ImageFourUrl);
-
-        await _propertyService.Update(vm, vm.Id);
-        return RedirectToAction(nameof(Index));
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "No se puede editar una propiedad que no existe o ya fue eliminada.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        await _propertyService.Delete(id);
-        DeletePropertyDirectory(id);
+        try
+        {
+            await _propertyService.Delete(id);
+            DeletePropertyDirectory(id);
+            TempData["SuccessMessage"] = "Propiedad eliminada correctamente.";
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "La propiedad ya ha sido eliminada o no existe.";
+        }
         return RedirectToAction(nameof(Index));
     }
 

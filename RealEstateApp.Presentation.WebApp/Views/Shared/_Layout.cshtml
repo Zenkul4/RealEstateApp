@@ -62,7 +62,21 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container mt-2">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-0 border-0 shadow-sm mb-4" role="alert">
+                <span class="fw-semibold">Error:</span> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-0 border-0 shadow-sm mb-4" role="alert">
+                <span class="fw-semibold">Éxito:</span> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

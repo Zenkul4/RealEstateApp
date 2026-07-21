@@ -42,8 +42,16 @@ public class ImprovementController : Controller
 
     public async Task<IActionResult> Edit(int id)
     {
-        var vm = await _improvementService.GetByIdSaveViewModel(id);
-        return View(vm);
+        try
+        {
+            var vm = await _improvementService.GetByIdSaveViewModel(id);
+            return View(vm);
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "La mejora solicitada no existe o ya fue eliminada.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -55,14 +63,31 @@ public class ImprovementController : Controller
             return View(vm);
         }
 
-        await _improvementService.Update(vm, vm.Id);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _improvementService.Update(vm, vm.Id);
+            TempData["SuccessMessage"] = "Mejora actualizada correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "No se puede editar una mejora que no existe o ya fue eliminada.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     public async Task<IActionResult> Delete(int id)
     {
-        var vm = await _improvementService.GetByIdSaveViewModel(id);
-        return View(vm);
+        try
+        {
+            var vm = await _improvementService.GetByIdSaveViewModel(id);
+            return View(vm);
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "La mejora ya no existe o ya fue eliminada.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -70,7 +95,15 @@ public class ImprovementController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeletePost(int id)
     {
-        await _improvementService.Delete(id);
+        try
+        {
+            await _improvementService.Delete(id);
+            TempData["SuccessMessage"] = "Mejora eliminada correctamente.";
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["ErrorMessage"] = "La mejora ya ha sido eliminada.";
+        }
         return RedirectToAction(nameof(Index));
     }
 }
