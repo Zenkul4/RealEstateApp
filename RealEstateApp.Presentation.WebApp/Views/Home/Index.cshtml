@@ -30,6 +30,13 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label fs-8 text-uppercase tracking-wide fw-bold">Tipo de Venta</label>
+                            <select name="saleTypeId" asp-items="ViewBag.SaleTypes" class="form-select rounded-0 border-slate py-2">
+                                <option value="">Todos los tipos</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fs-8 text-uppercase tracking-wide fw-bold">Precio Mínimo (DOP)</label>
                             <input type="number" name="minPrice" value="@ViewBag.SelectedMinPrice" class="form-control rounded-0 border-slate py-2" placeholder="Ej. 100000" />
                         </div>

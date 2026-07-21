@@ -31,7 +31,7 @@ public class HomeController : Controller
         _favoritePropertyService = favoritePropertyService;
     }
 
-    public async Task<IActionResult> Index(int? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms)
+    public async Task<IActionResult> Index(int? propertyTypeId, int? saleTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms)
     {
         var properties = await _propertyService.GetAllWithInclude();
 
@@ -39,6 +39,10 @@ public class HomeController : Controller
         if (propertyTypeId.HasValue)
         {
             properties = properties.Where(p => p.PropertyTypeId == propertyTypeId.Value).ToList();
+        }
+        if (saleTypeId.HasValue)
+        {
+            properties = properties.Where(p => p.SaleTypeId == saleTypeId.Value).ToList();
         }
         if (minPrice.HasValue)
         {
@@ -62,12 +66,15 @@ public class HomeController : Controller
         var favorites = await _favoritePropertyService.GetFavoritesByClientAsync(clientId);
         ViewBag.FavoriteIds = favorites.Select(f => f.Id).ToList();
 
-        // Load property types for the dropdown filter
+        // Load property types and sale types for the dropdown filters
         var propertyTypes = await _propertyTypeService.GetAllWithInclude();
+        var saleTypes = await _saleTypeService.GetAllWithInclude();
         ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name", propertyTypeId);
+        ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name", saleTypeId);
 
         // Keep filter values in ViewBag to display them in the form
         ViewBag.SelectedPropertyTypeId = propertyTypeId;
+        ViewBag.SelectedSaleTypeId = saleTypeId;
         ViewBag.SelectedMinPrice = minPrice;
         ViewBag.SelectedMaxPrice = maxPrice;
         ViewBag.SelectedRooms = rooms;

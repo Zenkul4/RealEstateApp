@@ -42,10 +42,10 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="bg-light rounded-circle d-flex align-items-center justify-content-center border me-3" style="width: 40px; height: 40px;">
-                                            <span class="text-slate-dark fw-bold fs-7 font-monospace">@agent.FullName.Substring(0, Math.Min(2, agent.FullName.Length)).ToUpper()</span>
+                                            <span class="text-slate-dark fw-bold fs-7 font-monospace">@(!string.IsNullOrEmpty(agent.FullName) ? agent.FullName.Substring(0, Math.Min(2, agent.FullName.Length)).ToUpper() : "AG")</span>
                                         </div>
                                         <div>
-                                            <div class="fw-semibold text-slate-dark">@agent.FullName</div>
+                                            <div class="fw-semibold text-slate-dark">@(agent.FullName ?? "Agente Sin Nombre")</div>
                                             <small class="text-muted text-uppercase tracking-wider fs-9">Asesor Autorizado</small>
                                         </div>
                                     </div>
