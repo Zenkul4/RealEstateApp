@@ -1,5 +1,6 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using RealEstateApp.Core.Application.DTOs.Email;
@@ -11,15 +12,21 @@ namespace RealEstateApp.Infrastructure.Shared.Services;
 public class EmailService : IEmailService
 {
     private readonly MailSettings _settings;
+    private readonly ILogger<EmailService> _logger;
 
-    public EmailService(IOptions<MailSettings> settings)
+    public EmailService(IOptions<MailSettings> settings, ILogger<EmailService> logger)
     {
         _settings = settings.Value;
+        _logger = logger;
     }
 
     public async Task SendAsync(EmailRequest request, CancellationToken cancellationToken = default)
     {
-        EnsureConfigured();
+        if (!IsConfigured())
+        {
+            _logger.LogWarning("Configuración SMTP incompleta o en modo prueba. Se omite el envío real del correo.");
+            return;
+        }
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_settings.FromName, _settings.FromEmail));
@@ -38,15 +45,15 @@ public class EmailService : IEmailService
         await client.DisconnectAsync(true, cancellationToken);
     }
 
-    private void EnsureConfigured()
+    private bool IsConfigured()
     {
-        if (string.IsNullOrWhiteSpace(_settings.Host) ||
-            string.IsNullOrWhiteSpace(_settings.UserName) ||
-            string.IsNullOrWhiteSpace(_settings.Password) ||
-            string.IsNullOrWhiteSpace(_settings.FromEmail))
+        if (string.IsNullOrWhiteSpace(_settings.Host) || _settings.Host == "smtp.example.com" ||
+            string.IsNullOrWhiteSpace(_settings.UserName) || _settings.UserName == "dev_user" ||
+            string.IsNullOrWhiteSpace(_settings.Password) || _settings.Password == "dev_password" ||
+            string.IsNullOrWhiteSpace(_settings.FromEmail) || _settings.FromEmail == "no-reply@realestateapp.com")
         {
-            throw new InvalidOperationException(
-                "La configuración SMTP está incompleta. Usa User Secrets o variables de entorno.");
+            return false;
         }
+        return true;
     }
 }

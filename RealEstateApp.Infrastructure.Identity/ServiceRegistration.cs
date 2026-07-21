@@ -1,4 +1,4 @@
-﻿// ServiceRegistration.cs
+// ServiceRegistration.cs
 using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +37,15 @@ public static class ServiceRegistration
         var jwtKey = configuration["JWTSettings:Key"];
         if (string.IsNullOrWhiteSpace(jwtKey))
         {
-            throw new InvalidOperationException("JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (env == "Development" || string.IsNullOrEmpty(env))
+            {
+                jwtKey = "SuperSecretKeyForDevelopmentRealEstateAppIdentity";
+            }
+            else
+            {
+                throw new InvalidOperationException("JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
+            }
         }
 
         services.AddAuthentication(options =>

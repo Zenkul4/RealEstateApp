@@ -1,0 +1,109 @@
+@model List<RealEstateApp.Core.Application.ViewModels.Properties.PropertyViewModel>
+@{
+    ViewData["Title"] = $"Propiedades de {ViewBag.AgentName}";
+}
+
+<div class="container px-4 mt-2">
+    <!-- Agent Profile Header Card -->
+    <div class="architect-card p-4 mb-4">
+        <div class="d-flex align-items-center flex-wrap gap-4">
+            <div>
+                @if (!string.IsNullOrEmpty(ViewBag.AgentPhotoUrl))
+                {
+                    <img src="@ViewBag.AgentPhotoUrl" alt="@ViewBag.AgentName" class="rounded-circle border border-brass shadow-sm object-fit-cover" style="width: 100px; height: 100px;" />
+                }
+                else
+                {
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center border" style="width: 100px; height: 100px;">
+                        <span class="text-slate-dark fw-bold fs-1 font-monospace">@(!string.IsNullOrEmpty(ViewBag.AgentName) ? ((string)ViewBag.AgentName).Substring(0, Math.Min(2, ((string)ViewBag.AgentName).Length)).ToUpper() : "AG")</span>
+                    </div>
+                }
+            </div>
+            <div>
+                <span class="fs-9 text-uppercase tracking-wider fw-bold text-brass d-block mb-1">Asesor Responsable</span>
+                <h2 class="fw-bold text-slate-dark m-0">@ViewBag.AgentName</h2>
+                <div class="d-flex flex-wrap gap-3 mt-2 text-muted fs-7">
+                    <span><strong>Correo:</strong> <a href="mailto:@ViewBag.AgentEmail" class="text-slate-medium text-decoration-none">@ViewBag.AgentEmail</a></span>
+                    @if (!string.IsNullOrEmpty(ViewBag.AgentPhone))
+                    {
+                        <span>· <strong>Teléfono:</strong> @ViewBag.AgentPhone</span>
+                    }
+                </div>
+            </div>
+            <div class="ms-md-auto bg-light px-3 py-2 border border-light">
+                <span class="fs-7 text-uppercase tracking-wider fw-bold text-muted">Inmuebles Activos:</span>
+                <span class="fw-bold text-slate-dark fs-6 font-monospace">@Model.Count</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <a asp-action="Agents" class="text-brass fw-semibold text-decoration-none fs-7"><i class="bi bi-arrow-left"></i> Volver al listado de asesores</a>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="architect-card text-center py-5">
+            <p class="text-muted fs-5 mb-0">Este asesor no tiene propiedades disponibles publicadas actualmente.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="architect-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <!-- Image Gallery/Principal -->
+                            <div class="position-relative overflow-hidden bg-light border-bottom border-light" style="height: 220px;">
+                                @if (property.ImageUrls != null && property.ImageUrls.Count > 0)
+                                {
+                                    <img src="@property.ImageUrls[0]" alt="Propiedad" class="w-100 h-100 object-fit-cover transition-transform duration-300" />
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                                        No Image
+                                    </div>
+                                }
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-brass text-white rounded-0 px-3 py-2 text-uppercase font-monospace fs-8">@property.SaleTypeName</span>
+                                </div>
+                            </div>
+
+                            <div class="architect-body">
+                                <span class="text-brass fw-bold font-monospace fs-8 text-uppercase tracking-wider">CÓD: @property.Code</span>
+                                <h4 class="fw-bold text-slate-dark mt-1 mb-2">@property.Price.ToString("C") DOP</h4>
+                                <h6 class="text-muted mb-3">@property.PropertyTypeName</h6>
+                                
+                                <p class="text-secondary fs-7 mb-4 text-truncate">@property.Description</p>
+                                
+                                <div class="row text-center bg-light g-0 py-2 border-top border-bottom border-light">
+                                    <div class="col-4 border-end border-light">
+                                        <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Hab.</small>
+                                        <span class="fw-bold text-slate-medium fs-7">@property.Rooms</span>
+                                    </div>
+                                    <div class="col-4 border-end border-light">
+                                        <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Baños</small>
+                                        <span class="fw-bold text-slate-medium fs-7">@property.Bathrooms</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Área</small>
+                                        <span class="fw-bold text-slate-medium fs-7">@property.LandSize.ToString("N0") m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="architect-body pt-0 mt-auto">
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top border-light">
+                                <a asp-action="Details" asp-route-id="@property.Id" class="btn-outline-brass w-100 text-center py-2">Ver Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

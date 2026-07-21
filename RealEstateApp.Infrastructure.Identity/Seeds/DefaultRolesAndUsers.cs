@@ -58,8 +58,16 @@ public static class DefaultRolesAndUsers
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new InvalidOperationException(
-                    $"Configura SeedUsers:{configurationName}:Password mediante User Secrets o una variable de entorno.");
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if (env == "Development" || string.IsNullOrEmpty(env))
+                {
+                    password = "Admin123!*";
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"Configura SeedUsers:{configurationName}:Password mediante User Secrets o una variable de entorno.");
+                }
             }
 
             user = new ApplicationUser

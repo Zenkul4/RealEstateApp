@@ -56,14 +56,19 @@ public class FavoritePropertyService : IFavoritePropertyService
         var properties = new List<Property>();
         foreach (var favProp in clientFavorites)
         {
-            var propWithIncludes = await _propertyRepository.GetByIdWithIncludeAsync(favProp.Id, p => p.PropertyType, p => p.SaleType);
+            var propWithIncludes = await _propertyRepository.GetByIdWithIncludeAsync(favProp.Id, p => p.PropertyType, p => p.SaleType, p => p.Images);
             if (propWithIncludes != null)
             {
                 properties.Add(propWithIncludes);
             }
         }
 
-        return _mapper.Map<List<PropertyViewModel>>(properties);
+        var vms = _mapper.Map<List<PropertyViewModel>>(properties);
+        for (int i = 0; i < properties.Count; i++)
+        {
+            vms[i].ImageUrls = properties[i].Images.Select(img => img.ImageUrl).ToList();
+        }
+        return vms;
     }
 
     public async Task<bool> IsFavoriteAsync(int propertyId, string clientId)

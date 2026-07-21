@@ -24,28 +24,41 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-sm-center">
-                        <li class="nav-item">
-                            <a class="nav-link px-3" asp-area="" asp-controller="Home" asp-action="Index">Buscador</a>
-                        </li>
-                        @if (User.IsInRole("Cliente"))
-                        {
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="Favorite" asp-action="Index">Mis favoritos</a></li>
-                        }
-                        @if (User.IsInRole("Agente"))
-                        {
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="Property" asp-action="Index">Mis propiedades</a></li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link px-3" asp-area="" asp-controller="Admin" asp-action="Agents">Agentes</a>
-                        </li>
-                        @if (User.IsInRole("Administrador"))
-                        {
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="PropertyType" asp-action="Index">Tipos</a></li>
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="SaleType" asp-action="Index">Ventas</a></li>
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="Improvement" asp-action="Index">Mejoras</a></li>
-                        }
                         @if (User.Identity?.IsAuthenticated == true)
                         {
+                            @if (User.IsInRole("Agente"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Property" asp-action="Index">Mis propiedades</a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Cliente"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Home" asp-action="Index">Buscador</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Favorite" asp-action="Index">Mis favoritos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Home" asp-action="Agents">Agentes</a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Admin" asp-action="Agents">Agentes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="PropertyType" asp-action="Index">Tipos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="SaleType" asp-action="Index">Ventas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Improvement" asp-action="Index">Mejoras</a>
+                                </li>
+                            }
                             <li class="nav-item ms-sm-2">
                                 <form asp-controller="Account" asp-action="Logout" method="post">
                                     <button type="submit" class="nav-session">Cerrar sesión</button>
@@ -54,8 +67,18 @@
                         }
                         else
                         {
-                            <li class="nav-item"><a class="nav-link px-3" asp-controller="Account" asp-action="Register">Únete</a></li>
-                            <li class="nav-item ms-sm-2"><a class="nav-session" asp-controller="Account" asp-action="Login">Iniciar sesión</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-controller="Home" asp-action="Index">Buscador</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-controller="Home" asp-action="Agents">Agentes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3" asp-controller="Account" asp-action="Register">Únete</a>
+                            </li>
+                            <li class="nav-item ms-sm-2">
+                                <a class="nav-session" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                            </li>
                         }
                     </ul>
                 </div>

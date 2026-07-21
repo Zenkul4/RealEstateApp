@@ -63,10 +63,17 @@ public class AccountService : IAccountService
 
         claims.AddRange(rolesList.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:Key"]!));
+        var key = _configuration["JWTSettings:Key"] ?? "SuperSecretKeyForDevelopmentRealEstateAppIdentity";
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
-        var expiresAtUtc = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JWTSettings:DurationInMinutes"]));
+        var durationStr = _configuration["JWTSettings:DurationInMinutes"];
+        double duration = 60;
+        if (double.TryParse(durationStr, out double parsedDuration))
+        {
+            duration = parsedDuration;
+        }
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(duration);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),

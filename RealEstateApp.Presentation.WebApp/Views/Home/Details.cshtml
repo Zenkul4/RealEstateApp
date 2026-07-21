@@ -135,36 +135,112 @@
             </div>
         </div>
 
-        <!-- Right Side: Agent Info -->
+        <!-- Right Side: Agent Info & Contact/Offer Forms -->
         <div class="col-lg-4 col-md-12 col-sm-12">
-            <div class="architect-card shadow-sm sticky-top" style="top: 20px;">
+            <div class="architect-card shadow-sm sticky-top mb-4" style="top: 20px;">
                 <div class="architect-header bg-slate-dark text-white p-4">
                     <h5 class="fw-bold m-0 text-uppercase tracking-wider fs-6 text-brass">Contacto del Asesor</h5>
                 </div>
                 <div class="architect-body p-4 text-center">
                     <div class="mb-3">
-                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border" style="width: 80px; height: 80px;">
-                            <span class="text-slate-dark fw-bold fs-2 font-monospace">@(!string.IsNullOrEmpty(Model.AgentName) ? Model.AgentName.Substring(0, Math.Min(2, Model.AgentName.Length)).ToUpper() : "AG")</span>
-                        </div>
+                        @if (!string.IsNullOrEmpty((string)ViewBag.AgentPhotoUrl))
+                        {
+                            <img src="@ViewBag.AgentPhotoUrl" alt="@Model.AgentName" class="rounded-circle border border-brass object-fit-cover" style="width: 80px; height: 80px;" />
+                        }
+                        else
+                        {
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border" style="width: 80px; height: 80px;">
+                                <span class="text-slate-dark fw-bold fs-2 font-monospace">@(!string.IsNullOrEmpty(Model.AgentName) ? Model.AgentName.Substring(0, Math.Min(2, Model.AgentName.Length)).ToUpper() : "AG")</span>
+                            </div>
+                        }
                     </div>
                     
                     <h4 class="fw-bold text-slate-dark mb-1">@(!string.IsNullOrEmpty(Model.AgentName) ? Model.AgentName : "Agente Inmobiliario")</h4>
                     <p class="text-muted fs-7 text-uppercase tracking-wider fw-semibold mb-3">Agente Inmobiliario Autorizado</p>
                     
-                    <div class="border-top border-light pt-3 text-start">
+                    <div class="border-top border-light pt-3 text-start mb-3">
                         <div class="mb-2">
                             <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Correo electrónico</small>
-                            <a href="mailto:@Model.AgentId" class="text-slate-medium fw-semibold fs-6">@Model.AgentId</a>
+                            <a href="mailto:@(ViewBag.AgentEmail ?? Model.AgentId)" class="text-slate-medium fw-semibold fs-6 text-break">@(ViewBag.AgentEmail ?? Model.AgentId)</a>
                         </div>
+                        @if (!string.IsNullOrEmpty((string)ViewBag.AgentPhone))
+                        {
+                            <div class="mb-2">
+                                <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Teléfono</small>
+                                <span class="text-slate-medium fw-semibold fs-6">@ViewBag.AgentPhone</span>
+                            </div>
+                        }
                         <div class="mb-0">
                             <small class="text-muted d-block text-uppercase fs-9 fw-semibold">Estatus de asesoría</small>
                             <span class="badge bg-success text-white rounded-0 px-2 py-1 fs-8 mt-1">Activo</span>
                         </div>
                     </div>
 
-                    <div class="border-top border-light pt-4 mt-4">
-                        <a href="mailto:@Model.AgentId?subject=Interés en propiedad CÓD: @Model.Code" class="btn-brass w-100 py-2 fs-7 text-uppercase tracking-wider">Solicitar Información</a>
-                    </div>
+                    @if (!User.IsInRole("Agente") && !User.IsInRole("Administrador"))
+                    {
+                        <!-- Tabs for Forms -->
+                        <div class="border-top border-light pt-3 text-start">
+                            <ul class="nav nav-tabs rounded-0 mb-3" id="contactTabs" role="tablist">
+                                <li class="nav-item" role="presentation" style="width: 50%;">
+                                    <button class="nav-link active w-100 rounded-0 fs-8 text-uppercase fw-bold text-slate-dark border-light py-2" id="msg-tab" data-bs-toggle="tab" data-bs-target="#msg-pane" type="button" role="tab">Mensaje</button>
+                                </li>
+                                <li class="nav-item" role="presentation" style="width: 50%;">
+                                    <button class="nav-link w-100 rounded-0 fs-8 text-uppercase fw-bold text-slate-dark border-light py-2" id="offer-tab" data-bs-toggle="tab" data-bs-target="#offer-pane" type="button" role="tab">Oferta</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="contactTabsContent">
+                                <!-- Send Message Pane -->
+                                <div class="tab-pane fade show active" id="msg-pane" role="tabpanel" tabindex="0">
+                                    <form asp-controller="Home" asp-action="ContactAgent" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="propertyId" value="@Model.Id" />
+                                        
+                                        <div class="mb-2">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Nombre</label>
+                                            <input type="text" name="clientName" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "")" />
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Correo</label>
+                                            <input type="email" name="clientEmail" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value : "")" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Mensaje</label>
+                                            <textarea name="messageText" class="form-control form-control-sm rounded-0 border-slate" rows="3" required placeholder="Escriba su consulta..."></textarea>
+                                        </div>
+                                        <button type="submit" class="btn-brass w-100 py-2 fs-8 text-uppercase tracking-wider">Enviar Mensaje</button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Make Offer Pane -->
+                                <div class="tab-pane fade" id="offer-pane" role="tabpanel" tabindex="0">
+                                    <form asp-controller="Home" asp-action="MakeOffer" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="propertyId" value="@Model.Id" />
+                                        
+                                        <div class="mb-2">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Nombre</label>
+                                            <input type="text" name="clientName" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "")" />
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Correo</label>
+                                            <input type="email" name="clientEmail" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value : "")" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Monto de Oferta (DOP)</label>
+                                            <input type="number" name="offerAmount" step="0.01" min="0.01" class="form-control form-control-sm rounded-0 border-slate font-monospace" required placeholder="Ej. 1500000" />
+                                        </div>
+                                        <button type="submit" class="btn-brass w-100 py-2 fs-8 text-uppercase tracking-wider">Enviar Oferta</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="border-top border-light pt-3 text-center text-muted fs-8">
+                            Las opciones de mensaje u oferta no están disponibles para asesores o administradores.
+                        </div>
+                    }
                 </div>
             </div>
         </div>
