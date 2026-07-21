@@ -38,11 +38,9 @@ public class PropertyController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // Por ahora, maneja un ID de agente dummy o lee el autenticado si está disponible
-        string agentId = "dummy-agent-id";
+        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
         
         var properties = await _propertyService.GetAllWithInclude();
-        // Filtramos para mostrar solo las propiedades de este agente
         var agentProperties = properties.Where(p => p.AgentId == agentId).ToList();
         return View(agentProperties);
     }
@@ -52,7 +50,7 @@ public class PropertyController : Controller
         await LoadViewBags();
         var vm = new SavePropertyViewModel
         {
-            AgentId = "dummy-agent-id" // Asignación automática del agente
+            AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id"
         };
         return View(vm);
     }
@@ -61,6 +59,15 @@ public class PropertyController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(SavePropertyViewModel vm)
     {
+        if (vm == null)
+        {
+            ModelState.AddModelError(string.Empty, "Los datos de la propiedad son nulos o inválidos.");
+            await LoadViewBags();
+            return View(new SavePropertyViewModel { AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id" });
+        }
+
+        vm.AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+
         if (!ModelState.IsValid)
         {
             await LoadViewBags();
@@ -75,18 +82,13 @@ public class PropertyController : Controller
             return View(vm);
         }
 
-        vm.AgentId = "dummy-agent-id";
-        
-        // Creamos la propiedad primero para obtener su ID de base de datos
         var result = await _propertyService.Add(vm);
 
-        // Subimos las imágenes físicamente
         result.ImageOneUrl = UploadFile(vm.ImageOne, result.Id);
         result.ImageTwoUrl = UploadFile(vm.ImageTwo, result.Id);
         result.ImageThreeUrl = UploadFile(vm.ImageThree, result.Id);
         result.ImageFourUrl = UploadFile(vm.ImageFour, result.Id);
 
-        // Actualizamos las URL de las imágenes en el registro
         await _propertyService.Update(result, result.Id);
 
         return RedirectToAction(nameof(Index));
@@ -97,6 +99,12 @@ public class PropertyController : Controller
         try
         {
             var vm = await _propertyService.GetByIdSaveViewModel(id);
+            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+            if (vm.AgentId != agentId)
+            {
+                TempData["ErrorMessage"] = "No tiene permisos para editar esta propiedad.";
+                return RedirectToAction(nameof(Index));
+            }
             await LoadViewBags();
             return View(vm);
         }
@@ -117,7 +125,8 @@ public class PropertyController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        vm.AgentId = "dummy-agent-id";
+        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+        vm.AgentId = agentId;
 
         if (!ModelState.IsValid)
         {
@@ -127,9 +136,13 @@ public class PropertyController : Controller
 
         try
         {
-            // Validación: Debe mantenerse al menos una imagen
             var currentProperty = await _propertyService.GetByIdSaveViewModel(vm.Id);
-            
+            if (currentProperty.AgentId != agentId)
+            {
+                TempData["ErrorMessage"] = "No tiene permisos para editar esta propiedad.";
+                return RedirectToAction(nameof(Index));
+            }
+
             // Comprobamos si tiene al menos una imagen activa tras el edit
             bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentProperty.ImageOneUrl);
             bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentProperty.ImageTwoUrl);
@@ -143,7 +156,6 @@ public class PropertyController : Controller
                 return View(vm);
             }
 
-            // Subimos las imágenes nuevas o mantenemos las actuales
             vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentProperty.ImageOneUrl);
             vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentProperty.ImageTwoUrl);
             vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentProperty.ImageThreeUrl);
@@ -166,6 +178,14 @@ public class PropertyController : Controller
     {
         try
         {
+            var vm = await _propertyService.GetByIdSaveViewModel(id);
+            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "dummy-agent-id";
+            if (vm.AgentId != agentId)
+            {
+                TempData["ErrorMessage"] = "No tiene permisos para eliminar esta propiedad.";
+                return RedirectToAction(nameof(Index));
+            }
+
             await _propertyService.Delete(id);
             DeletePropertyDirectory(id);
             TempData["SuccessMessage"] = "Propiedad eliminada correctamente.";
