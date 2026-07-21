@@ -1,10 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using RealEstateApp.Core.Application.Interfaces;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class AdminController : Controller
 {
     private readonly IUserService _userService;

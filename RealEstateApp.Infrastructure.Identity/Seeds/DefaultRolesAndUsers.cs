@@ -1,102 +1,91 @@
-﻿// Seeds/DefaultRolesAndUsers.cs
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RealEstateApp.Infrastructure.Identity.Models;
 
 namespace RealEstateApp.Infrastructure.Identity.Seeds;
 
 public static class DefaultRolesAndUsers
 {
-    public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    private static readonly string[] Roles =
     {
-        await roleManager.CreateAsync(new IdentityRole("Administrador"));
-        await roleManager.CreateAsync(new IdentityRole("Cliente"));
-        await roleManager.CreateAsync(new IdentityRole("Agente"));
-        await roleManager.CreateAsync(new IdentityRole("Desarrollador"));
+        "Administrador", "Cliente", "Agente", "Desarrollador"
+    };
 
-        var adminUser = new ApplicationUser
-        {
-            UserName = "adminuser",
-            Email = "admin@realestateapp.com",
-            FirstName = "Default",
-            LastName = "Admin",
-            Cedula = "00000000001",
-            EmailConfirmed = true,
-            PhoneNumber = "8090000000"
-        };
+    public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration)
+    {
+        using var scope = services.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        if (userManager.Users.All(u => u.Id != adminUser.Id))
+        foreach (var role in Roles)
         {
-            var user = await userManager.FindByEmailAsync(adminUser.Email);
-            if (user == null)
+            if (!await roleManager.RoleExistsAsync(role))
             {
-                await userManager.CreateAsync(adminUser, "123Pa$$word!");
-                await userManager.AddToRoleAsync(adminUser, "Administrador");
+                EnsureSucceeded(await roleManager.CreateAsync(new IdentityRole(role)), $"crear el rol {role}");
             }
         }
 
-        var clientUser = new ApplicationUser
-        {
-            UserName = "clientuser",
-            Email = "client@realestateapp.com",
-            FirstName = "Default",
-            LastName = "Client",
-            Cedula = "00000000002",
-            EmailConfirmed = true,
-            PhoneNumber = "8090000001"
-        };
+        await EnsureUserAsync(userManager, configuration, "Admin", "Administrador", "adminuser",
+            "admin@realestateapp.com", "Administrador", "Principal", "00000000001", "8090000000");
+        await EnsureUserAsync(userManager, configuration, "Developer", "Desarrollador", "devuser",
+            "dev@realestateapp.com", "Desarrollador", "Principal", "00000000004", "8090000003");
+        await EnsureUserAsync(userManager, configuration, "Client", "Cliente", "clientuser",
+            "client@realestateapp.com", "Cliente", "Demo", "00000000002", "8090000001");
+        await EnsureUserAsync(userManager, configuration, "Agent", "Agente", "agentuser",
+            "agent@realestateapp.com", "Agente", "Demo", "00000000003", "8090000002");
+    }
 
-        if (userManager.Users.All(u => u.Id != clientUser.Id))
+    private static async Task EnsureUserAsync(
+        UserManager<ApplicationUser> userManager,
+        IConfiguration configuration,
+        string configurationName,
+        string role,
+        string defaultUserName,
+        string defaultEmail,
+        string firstName,
+        string lastName,
+        string cedula,
+        string phone)
+    {
+        var section = configuration.GetSection($"SeedUsers:{configurationName}");
+        var email = section["Email"] ?? defaultEmail;
+        var userName = section["UserName"] ?? defaultUserName;
+        var password = section["Password"];
+
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null)
         {
-            var user = await userManager.FindByEmailAsync(clientUser.Email);
-            if (user == null)
+            if (string.IsNullOrWhiteSpace(password))
             {
-                await userManager.CreateAsync(clientUser, "123Pa$$word!");
-                await userManager.AddToRoleAsync(clientUser, "Cliente");
+                throw new InvalidOperationException(
+                    $"Configura SeedUsers:{configurationName}:Password mediante User Secrets o una variable de entorno.");
             }
+
+            user = new ApplicationUser
+            {
+                UserName = userName,
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                Cedula = cedula,
+                PhoneNumber = phone,
+                EmailConfirmed = true
+            };
+
+            EnsureSucceeded(await userManager.CreateAsync(user, password), $"crear el usuario {userName}");
         }
 
-        var agentUser = new ApplicationUser
+        if (!await userManager.IsInRoleAsync(user, role))
         {
-            UserName = "agentuser",
-            Email = "agent@realestateapp.com",
-            FirstName = "Default",
-            LastName = "Agent",
-            Cedula = "00000000003",
-            EmailConfirmed = true,
-            PhoneNumber = "8090000002"
-        };
-
-        if (userManager.Users.All(u => u.Id != agentUser.Id))
-        {
-            var user = await userManager.FindByEmailAsync(agentUser.Email);
-            if (user == null)
-            {
-                await userManager.CreateAsync(agentUser, "123Pa$$word!");
-                await userManager.AddToRoleAsync(agentUser, "Agente");
-            }
+            EnsureSucceeded(await userManager.AddToRoleAsync(user, role), $"asignar el rol {role} a {userName}");
         }
+    }
 
-        var devUser = new ApplicationUser
-        {
-            UserName = "devuser",
-            Email = "dev@realestateapp.com",
-            FirstName = "Default",
-            LastName = "Developer",
-            Cedula = "00000000004",
-            EmailConfirmed = true,
-            PhoneNumber = "8090000003"
-        };
-
-        if (userManager.Users.All(u => u.Id != devUser.Id))
-        {
-            var user = await userManager.FindByEmailAsync(devUser.Email);
-            if (user == null)
-            {
-                await userManager.CreateAsync(devUser, "123Pa$$word!");
-                await userManager.AddToRoleAsync(devUser, "Desarrollador");
-            }
-        }
+    private static void EnsureSucceeded(IdentityResult result, string operation)
+    {
+        if (result.Succeeded) return;
+        throw new InvalidOperationException(
+            $"No fue posible {operation}: {string.Join("; ", result.Errors.Select(error => error.Description))}");
     }
 }

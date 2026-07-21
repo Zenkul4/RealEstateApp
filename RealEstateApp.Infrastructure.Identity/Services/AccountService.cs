@@ -32,8 +32,7 @@ public class AccountService : IAccountService
 
     public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
     {
-        var user = await _userManager.FindByEmailAsync(request.EmailOrUserName) ??
-                   await _userManager.FindByNameAsync(request.EmailOrUserName);
+        var user = await FindUserAsync(request.EmailOrUserName);
 
         if (user == null)
         {
@@ -67,10 +66,11 @@ public class AccountService : IAccountService
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:Key"]!));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JWTSettings:DurationInMinutes"]));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["JWTSettings:DurationInMinutes"])),
+            Expires = expiresAtUtc,
             Issuer = _configuration["JWTSettings:Issuer"],
             Audience = _configuration["JWTSettings:Audience"],
             SigningCredentials = signingCredentials
@@ -88,9 +88,42 @@ public class AccountService : IAccountService
             Roles = rolesList.ToList(),
             IsVerified = user.EmailConfirmed,
             Token = jwtToken,
+            ExpiresAtUtc = expiresAtUtc,
             HasError = false
         };
     }
+
+    public async Task<AuthenticationResponse> SignInWebAppAsync(AuthenticationRequest request, bool rememberMe)
+    {
+        var user = await FindUserAsync(request.EmailOrUserName);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+        {
+            return Error("Los datos de acceso son inválidos.");
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            return Error("Tu cuenta todavía no está activa. Revisa tu correo o contacta al administrador.");
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        if (roles.Contains("Desarrollador"))
+        {
+            return Error("Los desarrolladores deben iniciar sesión mediante la WebAPI.");
+        }
+
+        await _signInManager.SignInAsync(user, rememberMe);
+        return new AuthenticationResponse
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            Email = user.Email!,
+            Roles = roles.ToList(),
+            IsVerified = true
+        };
+    }
+
+    public Task SignOutWebAppAsync() => _signInManager.SignOutAsync();
 
     public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request)
     {
@@ -104,6 +137,11 @@ public class AccountService : IAccountService
 
     private async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, bool isEmailConfirmed)
     {
+        if (request.Password != request.ConfirmPassword)
+        {
+            return new RegisterResponse { HasError = true, Error = "La contraseña y la confirmación no coinciden." };
+        }
+
         var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
         if (userWithSameEmail != null)
         {
@@ -114,6 +152,11 @@ public class AccountService : IAccountService
         if (userWithSameUserName != null)
         {
             return new RegisterResponse { HasError = true, Error = "Ya existe un usuario registrado con este nombre de usuario." };
+        }
+
+        if (_userManager.Users.Any(user => user.Cedula == request.Cedula))
+        {
+            return new RegisterResponse { HasError = true, Error = "Ya existe un usuario registrado con esta cédula." };
         }
 
         var user = new ApplicationUser
@@ -132,14 +175,33 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, MapUserTypeToRole(request.UserType));
-            return new RegisterResponse { HasError = false };
+            var roleResult = await _userManager.AddToRoleAsync(user, MapUserTypeToRole(request.UserType));
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                return new RegisterResponse { HasError = true, Error = "No fue posible asignar el rol seleccionado." };
+            }
+
+            var confirmationToken = request.UserType == UserType.Client
+                ? await _userManager.GenerateEmailConfirmationTokenAsync(user)
+                : string.Empty;
+
+            return new RegisterResponse
+            {
+                UserId = user.Id,
+                Email = user.Email!,
+                EmailConfirmationToken = confirmationToken
+            };
         }
 
-        return new RegisterResponse { HasError = true, Error = "Ha ocurrido un error al registrar el usuario." };
+        return new RegisterResponse
+        {
+            HasError = true,
+            Error = string.Join(" ", result.Errors.Select(error => error.Description))
+        };
     }
 
-    private string MapUserTypeToRole(UserType userType)
+    private static string MapUserTypeToRole(UserType userType)
     {
         return userType switch
         {
@@ -150,6 +212,26 @@ public class AccountService : IAccountService
             _ => userType.ToString()
         };
     }
+
+    public async Task<bool> ConfirmEmailAsync(string userId, string token)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return false;
+
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        return result.Succeeded;
+    }
+
+    private Task<ApplicationUser?> FindUserAsync(string emailOrUserName) =>
+        emailOrUserName.Contains('@')
+            ? _userManager.FindByEmailAsync(emailOrUserName)
+            : _userManager.FindByNameAsync(emailOrUserName);
+
+    private static AuthenticationResponse Error(string message) => new()
+    {
+        HasError = true,
+        Error = message
+    };
 
     public async Task<List<UserDto>> GetUsersByRoleAsync(string role)
     {

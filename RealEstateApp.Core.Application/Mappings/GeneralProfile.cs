@@ -18,6 +18,7 @@ public class GeneralProfile : Profile
             .ForMember(dest => dest.LandSize, opt => opt.MapFrom(src => src.Size))
             .ForMember(dest => dest.PropertyTypeName, opt => opt.MapFrom(src => src.PropertyType.Name))
             .ForMember(dest => dest.SaleTypeName, opt => opt.MapFrom(src => src.SaleType.Name))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
             .ReverseMap()
             .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.LandSize))
             .ForMember(dest => dest.PropertyType, opt => opt.Ignore())

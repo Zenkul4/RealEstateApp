@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Presentation.WebApp.Models;
@@ -88,6 +89,7 @@ public class HomeController : Controller
         }
     }
 
+    [Authorize(Roles = "Cliente")]
     public async Task<IActionResult> Favorites()
     {
         string clientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "dummy-client-id";
@@ -96,6 +98,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Cliente")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(int propertyId, string returnUrl)
     {

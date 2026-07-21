@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Acceso restringido";
+}
+
+<section class="status-shell status-shell--error">
+    <span class="status-mark">403</span>
+    <span class="auth-eyebrow">Plano restringido</span>
+    <h1>Esta sección requiere otros permisos.</h1>
+    <p>Tu sesión es válida, pero tu rol no tiene acceso a esta funcionalidad.</p>
+    <a asp-controller="Home" asp-action="Index" class="auth-primary">Volver a mi inicio <span aria-hidden="true">→</span></a>
+</section>

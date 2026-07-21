@@ -1,6 +1,11 @@
 using RealEstateApp.Infrastructure.Identity;
 using RealEstateApp.Infrastructure.Persistence;
 using RealEstateApp.Core.Application;
+using RealEstateApp.Infrastructure.Shared;
+using RealEstateApp.Infrastructure.Identity.Seeds;
+using RealEstateApp.Infrastructure.Identity.Contexts;
+using RealEstateApp.Infrastructure.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +15,17 @@ builder.Services.AddControllersWithViews();
 // Registro de las capas
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
-builder.Services.AddIdentityInfrastructure(builder.Configuration);
+builder.Services.AddWebAppIdentityInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
+    await scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.MigrateAsync();
+}
+await DefaultRolesAndUsers.SeedAsync(app.Services, builder.Configuration);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Cuenta registrada";
+    var isAgent = ViewBag.IsAgent == true;
+}
+
+<section class="status-shell">
+    <span class="status-mark">✓</span>
+    <span class="auth-eyebrow">Registro completado</span>
+    <h1>@(isAgent ? "Tu perfil está en revisión." : "Revisa tu bandeja de entrada.")</h1>
+    <p>@(isAgent
+        ? "Un administrador debe activar tu cuenta de agente antes de que puedas publicar propiedades."
+        : "Enviamos un enlace seguro a tu correo. Ábrelo para activar tu cuenta de cliente.")</p>
+    <a asp-action="Login" class="auth-primary">Ir a iniciar sesión <span aria-hidden="true">→</span></a>
+</section>

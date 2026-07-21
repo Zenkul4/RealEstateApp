@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Interfaces.Services;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
+[Authorize(Roles = "Agente")]
 public class PropertyController : Controller
 {
     private readonly IPropertyService _propertyService;

@@ -1,0 +1,53 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<section class="auth-shell">
+    <aside class="auth-story" aria-label="Bienvenida a RealEstateApp">
+        <span class="auth-eyebrow">Acceso privado</span>
+        <h1>Tu portafolio,<br />en perspectiva.</h1>
+        <p>Consulta oportunidades, administra propiedades y mantén cada conversación en un solo lugar.</p>
+        <div class="auth-blueprint" aria-hidden="true">
+            <span></span><span></span><span></span>
+        </div>
+    </aside>
+
+    <div class="auth-panel">
+        <div class="auth-panel__header">
+            <span class="auth-kicker">RealEstateApp / Cuenta</span>
+            <h2>Bienvenido de nuevo</h2>
+            <p>Ingresa con tu correo o nombre de usuario.</p>
+        </div>
+
+        <form asp-action="Login" method="post" class="auth-form">
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="validation-panel"></div>
+
+            <div class="field-group">
+                <label asp-for="EmailOrUserName"></label>
+                <input asp-for="EmailOrUserName" autocomplete="username" placeholder="nombre@correo.com" />
+                <span asp-validation-for="EmailOrUserName"></span>
+            </div>
+
+            <div class="field-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" autocomplete="current-password" placeholder="••••••••" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <label class="check-row">
+                <input asp-for="RememberMe" />
+                <span>@Html.DisplayNameFor(model => model.RememberMe)</span>
+            </label>
+
+            <button type="submit" class="auth-primary">Entrar a mi cuenta <span aria-hidden="true">→</span></button>
+        </form>
+
+        <p class="auth-switch">¿Aún no tienes cuenta? <a asp-action="Register">Únete a la plataforma</a></p>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

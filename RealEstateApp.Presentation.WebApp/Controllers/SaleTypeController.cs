@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.SaleType;
 using System.Threading.Tasks;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class SaleTypeController : Controller
 {
     private readonly ISaleTypeService _saleTypeService;
