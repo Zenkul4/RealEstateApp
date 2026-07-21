@@ -137,15 +137,9 @@ public class AccountService : IAccountService
 
     public Task SignOutWebAppAsync() => _signInManager.SignOutAsync();
 
-    public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request, string? origin = null)
+    public async Task<RegisterResponse> RegisterBasicUserAsync(RegisterRequest request)
     {
-        _logger.LogInformation("[DEBUG_ACCOUNT] RegisterBasicUserAsync invocado para {Email}. Origen inicial recibido: {Origin}", request.Email, origin);
-        if (string.IsNullOrWhiteSpace(origin))
-        {
-            origin = "https://localhost:7109";
-            _logger.LogInformation("[DEBUG_ACCOUNT] Aplicado fallback de origen por defecto: {Origin}", origin);
-        }
-        return await RegisterUserAsync(request, isEmailConfirmed: false, origin);
+        return await RegisterUserAsync(request, isEmailConfirmed: false);
     }
 
     public async Task<RegisterResponse> RegisterAdminOrDeveloperAsync(RegisterRequest request)
@@ -154,9 +148,9 @@ public class AccountService : IAccountService
         return await RegisterUserAsync(request, isEmailConfirmed: true);
     }
 
-    private async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, bool isEmailConfirmed, string? origin = null)
+    private async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, bool isEmailConfirmed)
     {
-        _logger.LogInformation("[DEBUG_ACCOUNT] RegisterUserAsync iniciado. UserType: {UserType}, IsEmailConfirmed: {IsEmailConfirmed}, Origin: {Origin}", request.UserType, isEmailConfirmed, origin);
+        _logger.LogInformation("Iniciando registro para {Email} con tipo {UserType}.", request.Email, request.UserType);
 
         if (request.Password != request.ConfirmPassword)
         {
@@ -220,7 +214,7 @@ public class AccountService : IAccountService
                 _logger.LogInformation("[DEBUG_ACCOUNT] Raw Token generado exitosamente (Length: {Length})", rawToken.Length);
 
                 confirmationToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
-                _logger.LogInformation("[DEBUG_ACCOUNT] Token codificado con WebEncoders.Base64UrlEncode -> Token: {Token}", confirmationToken);
+                _logger.LogInformation("Token de confirmación generado para el usuario {UserId}.", user.Id);
             }
 
             return new RegisterResponse
@@ -257,6 +251,19 @@ public class AccountService : IAccountService
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
         return result.Succeeded;
+    }
+
+    public async Task DeleteUserAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return;
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException(
+                $"No fue posible revertir el usuario: {string.Join("; ", result.Errors.Select(error => error.Description))}");
+        }
     }
 
     private Task<ApplicationUser?> FindUserAsync(string emailOrUserName) =>
