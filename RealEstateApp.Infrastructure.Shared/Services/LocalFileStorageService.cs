@@ -42,4 +42,22 @@ public class LocalFileStorageService : IFileStorageService
 
         return $"/images/profiles/{fileName}";
     }
+
+    public Task DeleteAsync(string relativePath, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (string.IsNullOrWhiteSpace(relativePath)) return Task.CompletedTask;
+
+        var normalizedPath = relativePath.TrimStart('/', '\\').Replace('/', Path.DirectorySeparatorChar);
+        var profilesFolder = Path.GetFullPath(Path.Combine(_environment.WebRootPath, "images", "profiles"));
+        var absolutePath = Path.GetFullPath(Path.Combine(_environment.WebRootPath, normalizedPath));
+
+        if (!absolutePath.StartsWith(profilesFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("La ruta del archivo no pertenece al almacenamiento de perfiles.");
+        }
+
+        if (File.Exists(absolutePath)) File.Delete(absolutePath);
+        return Task.CompletedTask;
+    }
 }

@@ -100,9 +100,6 @@ public class AccountController : Controller
             return View(viewModel);
         }
 
-        var origin = $"{Request.Scheme}://{Request.Host}";
-        _logger.LogInformation("[DEBUG_CONTROLLER] POST Register iniciado para {Email}. Origen generado: {Origin}", viewModel.Email, origin);
-
         var response = await _accountService.RegisterBasicUserAsync(new RegisterRequest
         {
             FirstName = viewModel.FirstName.Trim(),
@@ -115,14 +112,11 @@ public class AccountController : Controller
             ConfirmPassword = viewModel.ConfirmPassword,
             PhotoUrl = photoUrl,
             UserType = viewModel.UserType
-        }, origin);
-
-        _logger.LogInformation("[DEBUG_CONTROLLER] Respuesta devuelta por RegisterBasicUserAsync -> HasError: {HasError}, UserId: {UserId}, Email: {Email}, HasToken: {HasToken}",
-            response.HasError, response.UserId, response.Email, !string.IsNullOrEmpty(response.EmailConfirmationToken));
+        });
 
         if (response.HasError)
         {
-            _logger.LogWarning("[DEBUG_CONTROLLER] Error en el registro de usuario: {Error}", response.Error);
+            await _fileStorageService.DeleteAsync(photoUrl, cancellationToken);
             ModelState.AddModelError(string.Empty, response.Error!);
             return View(viewModel);
         }
@@ -135,17 +129,25 @@ public class AccountController : Controller
                 token = response.EmailConfirmationToken
             }, Request.Scheme)!;
 
-            _logger.LogInformation("[DEBUG_CONTROLLER] CallbackUrl generado para activación: {CallbackUrl}", callbackUrl);
-            _logger.LogInformation("[DEBUG_CONTROLLER] Llamando a _emailService.SendAsync para enviar correo de activación a {Email}...", response.Email);
-
-            await _emailService.SendAsync(new EmailRequest
+            try
             {
-                To = response.Email,
-                Subject = "Activa tu cuenta de RealEstateApp",
-                HtmlBody = BuildActivationEmail(viewModel.FirstName, callbackUrl)
-            }, cancellationToken);
+                await _emailService.SendAsync(new EmailRequest
+                {
+                    To = response.Email,
+                    Subject = "Activa tu cuenta de RealEstateApp",
+                    HtmlBody = BuildActivationEmail(viewModel.FirstName, callbackUrl)
+                }, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "No fue posible enviar el correo de activación a {Email}.", response.Email);
+                await _accountService.DeleteUserAsync(response.UserId);
+                await _fileStorageService.DeleteAsync(photoUrl, cancellationToken);
 
-            _logger.LogInformation("[DEBUG_CONTROLLER] Envío de correo completado exitosamente sin excepciones.");
+                ModelState.AddModelError(string.Empty,
+                    "No pudimos enviar el correo de activación. Verifica la configuración SMTP e inténtalo nuevamente.");
+                return View(viewModel);
+            }
         }
 
         return RedirectToAction(nameof(RegistrationPending), new { accountType = viewModel.UserType.ToString() });
