@@ -1,24 +1,38 @@
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.SaleType;
-using System.Threading.Tasks;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
-[Authorize(Roles = "Administrador")]
+[Authorize(Roles = "Administrador,Admin")]
 public class SaleTypeController : Controller
 {
     private readonly ISaleTypeService _saleTypeService;
+    private readonly IPropertyService _propertyService;
 
-    public SaleTypeController(ISaleTypeService saleTypeService)
+    public SaleTypeController(
+        ISaleTypeService saleTypeService,
+        IPropertyService propertyService)
     {
         _saleTypeService = saleTypeService;
+        _propertyService = propertyService;
     }
 
     public async Task<IActionResult> Index()
     {
         var list = await _saleTypeService.GetAllWithInclude();
+        var properties = await _propertyService.GetAllWithInclude();
+
+        foreach (var item in list)
+        {
+            item.PropertiesCount = properties.Count(p => p.SaleTypeId == item.Id);
+        }
+
         return View(list);
     }
 
@@ -36,7 +50,15 @@ public class SaleTypeController : Controller
             return View(vm);
         }
 
+        var list = await _saleTypeService.GetAllWithInclude();
+        if (list.Any(x => x.Name.Trim().Equals(vm.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            ModelState.AddModelError("Name", $"Ya existe un tipo de venta registrado con el nombre '{vm.Name}'.");
+            return View(vm);
+        }
+
         await _saleTypeService.Add(vm);
+        TempData["SuccessMessage"] = "Tipo de venta creado exitosamente.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -63,6 +85,13 @@ public class SaleTypeController : Controller
             return View(vm);
         }
 
+        var list = await _saleTypeService.GetAllWithInclude();
+        if (list.Any(x => x.Id != vm.Id && x.Name.Trim().Equals(vm.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            ModelState.AddModelError("Name", $"Ya existe otro tipo de venta registrado con el nombre '{vm.Name}'.");
+            return View(vm);
+        }
+
         try
         {
             await _saleTypeService.Update(vm, vm.Id);
@@ -81,6 +110,8 @@ public class SaleTypeController : Controller
         try
         {
             var vm = await _saleTypeService.GetByIdSaveViewModel(id);
+            var properties = await _propertyService.GetAllWithInclude();
+            ViewBag.PropertiesCount = properties.Count(p => p.SaleTypeId == id);
             return View(vm);
         }
         catch (KeyNotFoundException)
@@ -97,8 +128,16 @@ public class SaleTypeController : Controller
     {
         try
         {
+            // Cascade delete associated properties
+            var properties = await _propertyService.GetAllWithInclude();
+            var linkedProperties = properties.Where(p => p.SaleTypeId == id).ToList();
+            foreach (var prop in linkedProperties)
+            {
+                await _propertyService.Delete(prop.Id);
+            }
+
             await _saleTypeService.Delete(id);
-            TempData["SuccessMessage"] = "Tipo de venta eliminado correctamente.";
+            TempData["SuccessMessage"] = "Tipo de venta y todas sus propiedades asociadas fueron eliminados correctamente.";
         }
         catch (KeyNotFoundException)
         {

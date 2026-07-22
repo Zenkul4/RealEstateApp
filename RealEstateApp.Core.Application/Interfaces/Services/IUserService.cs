@@ -8,6 +8,7 @@ using RealEstateApp.Core.Application.ViewModels.Account;
 public interface IUserService
 {
     Task<List<UserViewModel>> GetAllAgentsAsync();
+    Task<List<UserViewModel>> GetUsersByRoleAsync(string role);
     Task<UserViewModel> GetByIdAsync(string id);
     Task UpdateActiveStatusAsync(string id, bool isActive);
 }

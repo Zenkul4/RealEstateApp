@@ -359,4 +359,64 @@ public class AccountService : IAccountService
             await _userManager.UpdateAsync(user);
         }
     }
+
+    public async Task<RegisterResponse> UpdateUserAdminAsync(string userId, string firstName, string lastName, string cedula, string email, string userName, string? password)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return new RegisterResponse { HasError = true, Error = "El usuario no existe." };
+        }
+
+        // Validate uniqueness excluding current user
+        var userWithSameEmail = await _userManager.FindByEmailAsync(email);
+        if (userWithSameEmail != null && userWithSameEmail.Id != userId)
+        {
+            return new RegisterResponse { HasError = true, Error = $"El correo '{email}' ya se encuentra registrado por otro usuario." };
+        }
+
+        var userWithSameUsername = await _userManager.FindByNameAsync(userName);
+        if (userWithSameUsername != null && userWithSameUsername.Id != userId)
+        {
+            return new RegisterResponse { HasError = true, Error = $"El nombre de usuario '{userName}' ya está en uso." };
+        }
+
+        var userWithSameCedula = _userManager.Users.FirstOrDefault(u => u.Cedula == cedula && u.Id != userId);
+        if (userWithSameCedula != null)
+        {
+            return new RegisterResponse { HasError = true, Error = $"La cédula '{cedula}' ya se encuentra registrada por otro usuario." };
+        }
+
+        user.FirstName = firstName;
+        user.LastName = lastName;
+        user.Cedula = cedula;
+        user.Email = email;
+        user.UserName = userName;
+
+        var updateResult = await _userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
+        {
+            return new RegisterResponse
+            {
+                HasError = true,
+                Error = string.Join("; ", updateResult.Errors.Select(e => e.Description))
+            };
+        }
+
+        if (!string.IsNullOrWhiteSpace(password))
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var passResult = await _userManager.ResetPasswordAsync(user, token, password);
+            if (!passResult.Succeeded)
+            {
+                return new RegisterResponse
+                {
+                    HasError = true,
+                    Error = string.Join("; ", passResult.Errors.Select(e => e.Description))
+                };
+            }
+        }
+
+        return new RegisterResponse { HasError = false, UserId = user.Id, Email = user.Email };
+    }
 }

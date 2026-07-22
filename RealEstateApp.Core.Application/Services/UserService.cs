@@ -24,7 +24,17 @@ public class UserService : IUserService
     public async Task<List<UserViewModel>> GetAllAgentsAsync()
     {
         var agents = await _accountService.GetUsersByRoleAsync("Agente");
+        if (agents.Count == 0)
+        {
+            agents = await _accountService.GetUsersByRoleAsync("Agent");
+        }
         return _mapper.Map<List<UserViewModel>>(agents);
+    }
+
+    public async Task<List<UserViewModel>> GetUsersByRoleAsync(string role)
+    {
+        var users = await _accountService.GetUsersByRoleAsync(role);
+        return _mapper.Map<List<UserViewModel>>(users);
     }
 
     public async Task<UserViewModel> GetByIdAsync(string id)

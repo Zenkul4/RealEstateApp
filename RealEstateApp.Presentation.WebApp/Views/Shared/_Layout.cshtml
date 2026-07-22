@@ -50,19 +50,28 @@
                                     <a class="nav-link px-3" asp-controller="Favorite" asp-action="Index">Mis propiedades</a>
                                 </li>
                             }
-                            else if (User.IsInRole("Administrador"))
+                            else if (User.IsInRole("Administrador") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="Admin" asp-action="Agents">Agentes</a>
+                                    <a class="nav-link px-2" asp-controller="Admin" asp-action="Index">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="PropertyType" asp-action="Index">Tipos</a>
+                                    <a class="nav-link px-2" asp-controller="Admin" asp-action="Agents">Agentes</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="SaleType" asp-action="Index">Ventas</a>
+                                    <a class="nav-link px-2" asp-controller="Admin" asp-action="Admins">Admins</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="Improvement" asp-action="Index">Mejoras</a>
+                                    <a class="nav-link px-2" asp-controller="Admin" asp-action="Developers">Desarrolladores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-2" asp-controller="PropertyType" asp-action="Index">Tipos Propiedad</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-2" asp-controller="SaleType" asp-action="Index">Tipos Venta</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-2" asp-controller="Improvement" asp-action="Index">Mejoras</a>
                                 </li>
                             }
                             <li class="nav-item ms-sm-2">

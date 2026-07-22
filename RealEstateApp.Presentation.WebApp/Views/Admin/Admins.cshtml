@@ -1,0 +1,102 @@
+@model List<RealEstateApp.Core.Application.ViewModels.Account.UserViewModel>
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Mantenimiento de Administradores";
+    string currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+    int activeAdminsCount = Model?.Count(a => a.IsActive) ?? 0;
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Mantenimiento de Administradores</h2>
+            <p class="text-muted m-0 fs-6">Administre los usuarios administradores de la plataforma.</p>
+        </div>
+        <div>
+            <a asp-action="CreateAdmin" class="btn-brass px-3 py-2 text-uppercase fs-7 tracking-wider">Crear Nuevo Administrador</a>
+        </div>
+    </div>
+
+    <div class="architect-card p-4">
+        @if (Model == null || Model.Count == 0)
+        {
+            <p class="text-muted text-center my-4">No hay administradores registrados.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle border border-light m-0">
+                    <thead class="table-light fs-8 text-uppercase">
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>Cédula</th>
+                            <th>Correo Electrónico</th>
+                            <th>Usuario</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var admin in Model)
+                        {
+                            bool isSelf = admin.Id == currentAdminId;
+                            bool isOnlyActive = admin.IsActive && activeAdminsCount <= 1;
+
+                            <tr>
+                                <td>
+                                    <span class="fw-bold text-slate-dark d-block">@admin.FullName</span>
+                                    @if (isSelf)
+                                    {
+                                        <small class="text-brass fw-bold fs-9">(Su Usuario Actual)</small>
+                                    }
+                                </td>
+                                <td class="font-monospace fs-8">@admin.Cedula</td>
+                                <td>@admin.Email</td>
+                                <td class="font-monospace fs-8">@admin.UserName</td>
+                                <td>
+                                    @if (admin.IsActive)
+                                    {
+                                        <span class="badge bg-success text-white px-2 py-1 fs-9 text-uppercase">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger text-white px-2 py-1 fs-9 text-uppercase">Inactivo</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        @if (isSelf)
+                                        {
+                                            <button class="btn btn-sm btn-secondary rounded-0 fs-9 text-uppercase px-2 py-1" disabled title="No puede editarse a sí mismo">Editar</button>
+                                            <button class="btn btn-sm btn-secondary rounded-0 fs-9 text-uppercase px-2 py-1" disabled title="No puede inactivarse a sí mismo">Inactivar</button>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="EditAdmin" asp-route-id="@admin.Id" class="btn btn-sm btn-outline-slate rounded-0 fs-9 text-uppercase px-2 py-1">Editar</a>
+
+                                            @if (isOnlyActive)
+                                            {
+                                                <button class="btn btn-sm btn-secondary rounded-0 fs-9 text-uppercase px-2 py-1" disabled title="No se puede inactivar el único administrador activo">Inactivar</button>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="ToggleAdminStatus" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="adminId" value="@admin.Id" />
+                                                    <input type="hidden" name="isActive" value="@(admin.IsActive ? "false" : "true")" />
+                                                    <button type="submit" class="btn btn-sm @(admin.IsActive ? "btn-warning text-dark" : "btn-success") rounded-0 fs-9 text-uppercase px-2 py-1">
+                                                        @(admin.IsActive ? "Inactivar" : "Activar")
+                                                    </button>
+                                                </form>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

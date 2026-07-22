@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Dashboard de Administrador";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Panel de Control Global</h2>
+            <p class="text-muted m-0 fs-6">Indicadores del sistema en tiempo real.</p>
+        </div>
+    </div>
+
+    <!-- 8 Indicators Cards -->
+    <div class="row g-4">
+        <!-- Propiedades disponibles -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-success">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Propiedades Disponibles</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.AvailableProperties</h2>
+            </div>
+        </div>
+
+        <!-- Propiedades vendidas -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-danger">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Propiedades Vendidas</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.SoldProperties</h2>
+            </div>
+        </div>
+
+        <!-- Agentes activos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-brass">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Agentes Activos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.ActiveAgents</h2>
+            </div>
+        </div>
+
+        <!-- Agentes inactivos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-secondary">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Agentes Inactivos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.InactiveAgents</h2>
+            </div>
+        </div>
+
+        <!-- Clientes activos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-primary">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Clientes Activos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.ActiveClients</h2>
+            </div>
+        </div>
+
+        <!-- Clientes inactivos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-warning">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Clientes Inactivos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.InactiveClients</h2>
+            </div>
+        </div>
+
+        <!-- Desarrolladores activos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-info">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Desarrolladores Activos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.ActiveDevelopers</h2>
+            </div>
+        </div>
+
+        <!-- Desarrolladores inactivos -->
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="architect-card p-4 text-center border-start border-4 border-dark">
+                <span class="text-uppercase tracking-wider text-muted fs-8 fw-bold d-block mb-1">Desarrolladores Inactivos</span>
+                <h2 class="fw-bold text-slate-dark display-6 m-0">@ViewBag.InactiveDevelopers</h2>
+            </div>
+        </div>
+    </div>
+</div>

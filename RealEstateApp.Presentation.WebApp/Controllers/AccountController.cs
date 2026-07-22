@@ -187,10 +187,10 @@ public class AccountController : Controller
     private IActionResult RedirectToRoleHome(IEnumerable<string>? roles = null)
     {
         var roleSet = roles?.ToHashSet(StringComparer.OrdinalIgnoreCase);
-        if (roleSet?.Contains("Administrador") == true || User.IsInRole("Administrador"))
-            return RedirectToAction("Agents", "Admin");
-        if (roleSet?.Contains("Agente") == true || User.IsInRole("Agente"))
-            return RedirectToAction("Index", "Property");
+        if (roleSet?.Contains("Administrador") == true || roleSet?.Contains("Admin") == true || User.IsInRole("Administrador") || User.IsInRole("Admin"))
+            return RedirectToAction("Index", "Admin");
+        if (roleSet?.Contains("Agente") == true || roleSet?.Contains("Agent") == true || User.IsInRole("Agente") || User.IsInRole("Agent"))
+            return RedirectToAction("Index", "Agent");
         return RedirectToAction("Index", "Home");
     }
 

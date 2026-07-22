@@ -17,4 +17,5 @@ public interface IAccountService
     Task<UserDto> GetUserByIdAsync(string id);
     Task UpdateUserStatusAsync(string id, bool isActive);
     Task UpdateUserProfileAsync(string userId, string firstName, string lastName, string phone, string? photoUrl);
+    Task<RegisterResponse> UpdateUserAdminAsync(string userId, string firstName, string lastName, string cedula, string email, string userName, string? password);
 }

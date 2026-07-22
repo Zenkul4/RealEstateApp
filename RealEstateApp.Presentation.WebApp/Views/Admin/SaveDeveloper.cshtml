@@ -1,0 +1,98 @@
+@using RealEstateApp.Core.Application.ViewModels.Admin
+@model SaveUserAdminViewModel
+@{
+    bool isEdit = !string.IsNullOrEmpty(Model.Id);
+    ViewData["Title"] = isEdit ? "Editar Desarrollador" : "Crear Desarrollador";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">@(isEdit ? "Editar Desarrollador" : "Registrar Nuevo Desarrollador")</h2>
+            <p class="text-muted m-0 fs-6">Complete los campos requeridos para la gestión de desarrolladores.</p>
+        </div>
+        <div>
+            <a asp-action="Developers" class="btn-outline-slate">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="architect-card p-4">
+                <form asp-action="@(isEdit ? "EditDeveloper" : "CreateDeveloper")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Role" />
+
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                    {
+                        <div class="alert alert-danger rounded-0 border-danger mb-4">
+                            @Html.ValidationSummary(false, "", new { @class = "m-0 text-danger" })
+                        </div>
+                    }
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">Nombre</label>
+                            <input asp-for="FirstName" class="form-control rounded-0 border-slate" required />
+                            <span asp-validation-for="FirstName" class="text-danger fs-8"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">Apellido</label>
+                            <input asp-for="LastName" class="form-control rounded-0 border-slate" required />
+                            <span asp-validation-for="LastName" class="text-danger fs-8"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">Cédula</label>
+                            <input asp-for="Cedula" class="form-control rounded-0 border-slate" placeholder="402-0000000-0" required />
+                            <span asp-validation-for="Cedula" class="text-danger fs-8"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">Nombre de Usuario</label>
+                            <input asp-for="UserName" class="form-control rounded-0 border-slate" required />
+                            <span asp-validation-for="UserName" class="text-danger fs-8"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">Correo Electrónico</label>
+                            <input asp-for="Email" type="email" class="form-control rounded-0 border-slate" required />
+                            <span asp-validation-for="Email" class="text-danger fs-8"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">
+                                Contraseña @(isEdit ? "(Opcional)" : "")
+                            </label>
+                            <input asp-for="Password" type="password" class="form-control rounded-0 border-slate" />
+                            <span asp-validation-for="Password" class="text-danger fs-8"></span>
+                            @if (isEdit)
+                            {
+                                <small class="text-muted fs-9">Deje este campo vacío si no desea modificar la contraseña actual.</small>
+                            }
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fs-8 text-uppercase tracking-wider fw-bold text-slate-dark">
+                                Confirmar Contraseña @(isEdit ? "(Opcional)" : "")
+                            </label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control rounded-0 border-slate" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger fs-8"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top border-light d-flex justify-content-end gap-2">
+                        <a asp-action="Developers" class="btn-outline-slate px-4 py-2 text-uppercase fs-8">Cancelar</a>
+                        <button type="submit" class="btn-brass px-4 py-2 text-uppercase fs-8">@(isEdit ? "Guardar Cambios" : "Crear Desarrollador")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
