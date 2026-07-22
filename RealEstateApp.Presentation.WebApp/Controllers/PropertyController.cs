@@ -97,6 +97,11 @@ public class PropertyController : Controller
             return View(vm);
         }
 
+        if (!ValidateImageFiles(vm))
+        {
+            return View(vm);
+        }
+
         // Validación de negocio: Debe cargarse al menos una imagen
         if (vm.ImageOne == null && vm.ImageTwo == null && vm.ImageThree == null && vm.ImageFour == null)
         {
@@ -160,6 +165,12 @@ public class PropertyController : Controller
         vm.AgentId = agentId;
 
         if (!ModelState.IsValid)
+        {
+            await LoadViewBags();
+            return View(vm);
+        }
+
+        if (!ValidateImageFiles(vm))
         {
             await LoadViewBags();
             return View(vm);
@@ -289,6 +300,31 @@ public class PropertyController : Controller
         }
 
         return $"{basePath}/{fileName}";
+    }
+
+    private static readonly HashSet<string> AllowedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".jpg", ".jpeg", ".png"
+    };
+
+    private bool ValidateImageFiles(SavePropertyViewModel vm)
+    {
+        var files = new[] { vm.ImageOne, vm.ImageTwo, vm.ImageThree, vm.ImageFour };
+        bool isValid = true;
+        foreach (var file in files)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var ext = Path.GetExtension(file.FileName);
+                if (string.IsNullOrEmpty(ext) || !AllowedImageExtensions.Contains(ext))
+                {
+                    ModelState.AddModelError(string.Empty, "Solo se permiten archivos de imagen con extensión .jpg, .jpeg o .png.");
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        return isValid;
     }
 
     private void DeletePropertyDirectory(int id)

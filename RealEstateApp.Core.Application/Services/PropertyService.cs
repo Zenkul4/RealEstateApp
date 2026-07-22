@@ -32,6 +32,7 @@ public class PropertyService : IPropertyService
     public async Task<SavePropertyViewModel> Add(SavePropertyViewModel vm)
     {
         var property = _mapper.Map<Property>(vm);
+        property.Status = RealEstateApp.Core.Domain.Enums.PropertyStatus.Disponible;
         
         // Generar código de propiedad de 6 dígitos único
         var random = new Random();

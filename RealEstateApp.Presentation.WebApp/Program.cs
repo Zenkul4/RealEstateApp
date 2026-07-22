@@ -23,18 +23,20 @@ builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-try
+using (var scope = app.Services.CreateScope())
 {
-    await using (var scope = app.Services.CreateAsyncScope())
+    var services = scope.ServiceProvider;
+    try
     {
-        await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
-        await scope.ServiceProvider.GetRequiredService<IdentityContext>().Database.MigrateAsync();
+        var config = services.GetRequiredService<IConfiguration>();
+        await DefaultRolesAndUsers.SeedAsync(services, config);
     }
-    await DefaultRolesAndUsers.SeedAsync(app.Services, builder.Configuration);
-}
-catch (System.Exception ex)
-{
-    System.Console.WriteLine($"[CRITICAL] Error durante la migración o siembra de la base de datos: {ex.Message}");
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error crítico durante el Seed de usuarios y roles.");
+        throw;
+    }
 }
 
 // Configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RealEstateApp.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPersistence : Migration
+    public partial class InitialPersistenceNet9 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
