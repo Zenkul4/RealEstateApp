@@ -1,5 +1,6 @@
 // ServiceRegistration.cs
 using System;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -37,15 +38,8 @@ public static class ServiceRegistration
         var jwtKey = configuration["JWTSettings:Key"];
         if (string.IsNullOrWhiteSpace(jwtKey))
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (env == "Development" || string.IsNullOrEmpty(env))
-            {
-                jwtKey = "SuperSecretKeyForDevelopmentRealEstateAppIdentity";
-            }
-            else
-            {
-                throw new InvalidOperationException("JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
-            }
+            throw new InvalidOperationException(
+                "JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
         }
 
         services.AddAuthentication(options =>
@@ -70,6 +64,30 @@ public static class ServiceRegistration
 
             options.Events = new JwtBearerEvents
             {
+                OnTokenValidated = async context =>
+                {
+                    var userId = context.Principal?.FindFirstValue("uid");
+                    if (string.IsNullOrWhiteSpace(userId))
+                    {
+                        context.Fail("El token no contiene un identificador de usuario válido.");
+                        return;
+                    }
+
+                    var userManager = context.HttpContext.RequestServices
+                        .GetRequiredService<UserManager<ApplicationUser>>();
+                    var user = await userManager.FindByIdAsync(userId);
+                    if (user is null || !user.EmailConfirmed)
+                    {
+                        context.Fail("El usuario se encuentra inactivo.");
+                        return;
+                    }
+
+                    var roles = await userManager.GetRolesAsync(user);
+                    if (!roles.Any(role => role is "Administrador" or "Desarrollador"))
+                    {
+                        context.Fail("El usuario no está autorizado para consumir la WebAPI.");
+                    }
+                },
                 OnChallenge = context => WriteJsonErrorAsync(context.Response, 401, "No está autorizado para acceder a este recurso.", context.HandleResponse),
                 OnForbidden = context => WriteJsonErrorAsync(context.Response, 403, "Acceso denegado. No tiene permisos para realizar esta acción.")
             };

@@ -47,13 +47,20 @@ En producción, usar variables de entorno con doble guion bajo, por ejemplo:
 
 - WebApp Login: `/Account/Login`
 - WebApp Registro: `/Account/Register`
-- Documento OpenAPI: `/openapi/v1.json`
-- Login API: `POST /api/account/login`
+- Swagger UI: `/swagger`
+- Documento OpenAPI: `/swagger/v1/swagger.json`
+- Login API: `POST /api/Account/authenticate`
+- Registrar desarrollador: `POST /api/Account/register-developer`
+- Registrar administrador: `POST /api/Account/register-admin`
 - Propiedades: `/api/properties`
 - Agentes: `/api/agents`
-- Tipos de propiedad: `/api/property-types`
-- Tipos de venta: `/api/sale-types`
+- Tipos de propiedad: `/api/propertytypes`
+- Tipos de venta: `/api/saletypes`
 - Mejoras: `/api/improvements`
+
+Las rutas anteriores `/api/account/login`, `/api/account/developers`,
+`/api/account/administrators`, `/api/property-types` y `/api/sale-types` se
+mantienen temporalmente como alias de compatibilidad.
 
 Los endpoints de consulta aceptan `Administrador` y `Desarrollador`. Las
 operaciones de creación, edición, eliminación y cambio de estado requieren
