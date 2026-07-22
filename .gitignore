@@ -15,4 +15,6 @@
 ## Archivos de configuración con secretos (opcional)
 appsettings.Development.json
 # Descomenta la siguiente línea si tampoco quieres subir el appsettings.json principal:
-# appsettings.json
+appsettings.json
+
+echo "**/appsettings*.json" >> .gitignore
