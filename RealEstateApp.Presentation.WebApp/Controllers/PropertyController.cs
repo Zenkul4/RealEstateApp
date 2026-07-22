@@ -8,12 +8,12 @@ using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Core.Application.ViewModels.Properties;
 using System;
 using System.IO;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
-[Authorize(Roles = "Agente")]
+[Authorize(Roles = "Agente,Agent")]
 public class PropertyController : Controller
 {
     private readonly IPropertyService _propertyService;
@@ -38,19 +38,26 @@ public class PropertyController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+        string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         
         var properties = await _propertyService.GetAllWithInclude();
-        var agentProperties = properties.Where(p => p.AgentId == agentId).ToList();
+        // Maintenance list shows ONLY available properties owned by this agent
+        var agentProperties = properties.Where(p => p.AgentId == agentId && p.Status == "Disponible").ToList();
         return View(agentProperties);
     }
 
     public async Task<IActionResult> Create()
     {
-        await LoadViewBags();
+        bool hasCategories = await LoadViewBags();
+        if (!hasCategories)
+        {
+            ViewBag.CategoryMissingError = "Debe haber al menos un Tipo de Propiedad, Tipo de Venta y Mejora registrados antes de crear una propiedad.";
+        }
+
         var vm = new SavePropertyViewModel
         {
-            AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
+            AgentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
+            Code = Random.Shared.Next(100000, 999999).ToString()
         };
         return View(vm);
     }
@@ -63,22 +70,37 @@ public class PropertyController : Controller
         {
             ModelState.AddModelError(string.Empty, "Los datos de la propiedad son nulos o inválidos.");
             await LoadViewBags();
-            return View(new SavePropertyViewModel { AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value });
+            return View(new SavePropertyViewModel { AgentId = User.FindFirstValue(ClaimTypes.NameIdentifier)! });
         }
 
-        vm.AgentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+        vm.AgentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        if (string.IsNullOrWhiteSpace(vm.Code))
+        {
+            vm.Code = Random.Shared.Next(100000, 999999).ToString();
+        }
+
+        bool hasCategories = await LoadViewBags();
+        if (!hasCategories)
+        {
+            ModelState.AddModelError(string.Empty, "Debe haber al menos un Tipo de Propiedad, Tipo de Venta y Mejora registrados antes de crear una propiedad.");
+            return View(vm);
+        }
+
+        if (vm.SelectedImprovements == null || vm.SelectedImprovements.Count == 0)
+        {
+            ModelState.AddModelError(string.Empty, "Debe seleccionar al menos una mejora para la propiedad.");
+            return View(vm);
+        }
 
         if (!ModelState.IsValid)
         {
-            await LoadViewBags();
             return View(vm);
         }
 
         // Validación de negocio: Debe cargarse al menos una imagen
         if (vm.ImageOne == null && vm.ImageTwo == null && vm.ImageThree == null && vm.ImageFour == null)
         {
-            ModelState.AddModelError(string.Empty, "Debe cargar al menos una imagen de la propiedad.");
-            await LoadViewBags();
+            ModelState.AddModelError(string.Empty, "Debe cargar al menos una imagen de la propiedad (de 1 a 4 imágenes).");
             return View(vm);
         }
 
@@ -90,6 +112,7 @@ public class PropertyController : Controller
         result.ImageFourUrl = UploadFile(vm.ImageFour, result.Id);
 
         await _propertyService.Update(result, result.Id);
+        TempData["SuccessMessage"] = "Propiedad creada exitosamente.";
 
         return RedirectToAction(nameof(Index));
     }
@@ -99,12 +122,20 @@ public class PropertyController : Controller
         try
         {
             var vm = await _propertyService.GetByIdSaveViewModel(id);
-            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+            string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             if (vm.AgentId != agentId)
             {
                 TempData["ErrorMessage"] = "No tiene permisos para editar esta propiedad.";
                 return RedirectToAction(nameof(Index));
             }
+
+            var property = await _propertyService.GetByIdWithInclude(id);
+            if (property.Status == "Vendida")
+            {
+                TempData["ErrorMessage"] = "No se puede editar una propiedad en estado Vendida.";
+                return RedirectToAction(nameof(Index));
+            }
+
             await LoadViewBags();
             return View(vm);
         }
@@ -125,7 +156,7 @@ public class PropertyController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+        string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         vm.AgentId = agentId;
 
         if (!ModelState.IsValid)
@@ -136,18 +167,26 @@ public class PropertyController : Controller
 
         try
         {
-            var currentProperty = await _propertyService.GetByIdSaveViewModel(vm.Id);
+            var currentProperty = await _propertyService.GetByIdWithInclude(vm.Id);
             if (currentProperty.AgentId != agentId)
             {
                 TempData["ErrorMessage"] = "No tiene permisos para editar esta propiedad.";
                 return RedirectToAction(nameof(Index));
             }
 
+            if (currentProperty.Status == "Vendida")
+            {
+                TempData["ErrorMessage"] = "No se puede editar una propiedad en estado Vendida.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var currentSaveVm = await _propertyService.GetByIdSaveViewModel(vm.Id);
+
             // Comprobamos si tiene al menos una imagen activa tras el edit
-            bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentProperty.ImageOneUrl);
-            bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentProperty.ImageTwoUrl);
-            bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentProperty.ImageThreeUrl);
-            bool hasImageFour = vm.ImageFour != null || !string.IsNullOrEmpty(currentProperty.ImageFourUrl);
+            bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentSaveVm.ImageOneUrl);
+            bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentSaveVm.ImageTwoUrl);
+            bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentSaveVm.ImageThreeUrl);
+            bool hasImageFour = vm.ImageFour != null || !string.IsNullOrEmpty(currentSaveVm.ImageFourUrl);
 
             if (!hasImageOne && !hasImageTwo && !hasImageThree && !hasImageFour)
             {
@@ -156,10 +195,10 @@ public class PropertyController : Controller
                 return View(vm);
             }
 
-            vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentProperty.ImageOneUrl);
-            vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentProperty.ImageTwoUrl);
-            vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentProperty.ImageThreeUrl);
-            vm.ImageFourUrl = UploadFile(vm.ImageFour, vm.Id, currentProperty.ImageFourUrl);
+            vm.ImageOneUrl = UploadFile(vm.ImageOne, vm.Id, currentSaveVm.ImageOneUrl);
+            vm.ImageTwoUrl = UploadFile(vm.ImageTwo, vm.Id, currentSaveVm.ImageTwoUrl);
+            vm.ImageThreeUrl = UploadFile(vm.ImageThree, vm.Id, currentSaveVm.ImageThreeUrl);
+            vm.ImageFourUrl = UploadFile(vm.ImageFour, vm.Id, currentSaveVm.ImageFourUrl);
 
             await _propertyService.Update(vm, vm.Id);
             TempData["SuccessMessage"] = "Propiedad actualizada correctamente.";
@@ -178,11 +217,17 @@ public class PropertyController : Controller
     {
         try
         {
-            var vm = await _propertyService.GetByIdSaveViewModel(id);
-            string agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
-            if (vm.AgentId != agentId)
+            var property = await _propertyService.GetByIdWithInclude(id);
+            string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (property.AgentId != agentId)
             {
                 TempData["ErrorMessage"] = "No tiene permisos para eliminar esta propiedad.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (property.Status == "Vendida")
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar una propiedad en estado Vendida.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -197,7 +242,7 @@ public class PropertyController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task LoadViewBags()
+    private async Task<bool> LoadViewBags()
     {
         var propertyTypes = await _propertyTypeService.GetAllWithInclude();
         var saleTypes = await _saleTypeService.GetAllWithInclude();
@@ -206,6 +251,8 @@ public class PropertyController : Controller
         ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name");
         ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name");
         ViewBag.Improvements = improvements;
+
+        return propertyTypes.Count > 0 && saleTypes.Count > 0 && improvements.Count > 0;
     }
 
     private string UploadFile(IFormFile? file, int id, string? currentUrl = null)

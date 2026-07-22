@@ -43,4 +43,14 @@ public class MessageService : IMessageService
         entity.SenderId = senderId;
         await _messageRepository.AddAsync(entity);
     }
+
+    public async Task<List<string>> GetClientIdsWhoMessagedPropertyAsync(int propertyId, string agentId)
+    {
+        var messages = await _messageRepository.GetAllAsync();
+        return messages
+            .Where(m => m.PropertyId == propertyId && m.AgentId == agentId)
+            .Select(m => m.ClientId)
+            .Distinct()
+            .ToList();
+    }
 }

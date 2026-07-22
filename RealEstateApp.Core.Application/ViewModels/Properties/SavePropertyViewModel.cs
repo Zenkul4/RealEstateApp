@@ -7,6 +7,7 @@ namespace RealEstateApp.Core.Application.ViewModels.Properties;
 public class SavePropertyViewModel
 {
     public int Id { get; set; }
+    public string? Code { get; set; }
 
     [Required(ErrorMessage = "El precio es requerido.")]
     [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "El precio debe ser mayor a cero.")]

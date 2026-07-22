@@ -8,4 +8,5 @@ public interface IMessageService
 {
     Task<List<MessageViewModel>> GetConversationAsync(int propertyId, string clientId, string agentId);
     Task AddAsync(SaveMessageViewModel vm, string senderId);
+    Task<List<string>> GetClientIdsWhoMessagedPropertyAsync(int propertyId, string agentId);
 }
