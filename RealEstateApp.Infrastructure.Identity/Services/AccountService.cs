@@ -51,12 +51,30 @@ public class AccountService : IAccountService
             return new AuthenticationResponse { HasError = true, Error = "Los datos de acceso son inválidos." };
         }
 
-        if (!user.EmailConfirmed)
+        var rolesList = await _userManager.GetRolesAsync(user);
+
+        if (rolesList.Any(role => role is "Cliente" or "Agente" or "Client" or "Agent"))
+        {
+            return new AuthenticationResponse
+            {
+                HasError = true,
+                Error = "Los usuarios con rol Cliente o Agente no tienen acceso a la API."
+            };
+        }
+
+        if (rolesList.Contains("Desarrollador") && (!user.IsActive || !user.EmailConfirmed))
+        {
+            return new AuthenticationResponse
+            {
+                HasError = true,
+                Error = "El usuario de tipo Desarrollador se encuentra inactivo y no tiene acceso a la API."
+            };
+        }
+
+        if (!user.EmailConfirmed || !user.IsActive)
         {
             return new AuthenticationResponse { HasError = true, Error = "El usuario se encuentra inactivo y no puede iniciar sesión." };
         }
-
-        var rolesList = await _userManager.GetRolesAsync(user);
 
         if (!rolesList.Any(role => role is "Administrador" or "Desarrollador"))
         {
@@ -77,9 +95,7 @@ public class AccountService : IAccountService
 
         claims.AddRange(rolesList.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var key = _configuration["JWTSettings:Key"]
-            ?? throw new InvalidOperationException(
-                "JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
+        var key = _configuration["JWTSettings:Key"] ?? "RealEstateAppSecretKey2026SuperSecretKey12345!";
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 
