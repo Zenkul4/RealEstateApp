@@ -25,7 +25,11 @@ public class EmailService : IEmailService
         EnsureConfigured();
 
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(_settings.FromName, _settings.FromEmail));
+        var fromAddress = string.IsNullOrWhiteSpace(_settings.FromName)
+            ? MailboxAddress.Parse(_settings.FromEmail)
+            : new MailboxAddress(_settings.FromName, _settings.FromEmail);
+
+        message.From.Add(fromAddress);
         message.To.Add(MailboxAddress.Parse(request.To));
         message.Subject = request.Subject;
         message.Body = new BodyBuilder { HtmlBody = request.HtmlBody }.ToMessageBody();
@@ -33,9 +37,9 @@ public class EmailService : IEmailService
         try
         {
             using var client = new SmtpClient();
-            var socketOptions = _settings.UseSsl
-                ? SecureSocketOptions.SslOnConnect
-                : SecureSocketOptions.StartTls;
+            var socketOptions = (_settings.Port == 587 && !_settings.UseSsl)
+                ? SecureSocketOptions.StartTls
+                : (_settings.UseSsl ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.Auto);
 
             await client.ConnectAsync(_settings.Host, _settings.Port, socketOptions, cancellationToken);
             await client.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
@@ -61,6 +65,27 @@ public class EmailService : IEmailService
 
     private void EnsureConfigured()
     {
+        if (string.IsNullOrWhiteSpace(_settings.Host))
+        {
+            _logger.LogError("Configuración SMTP incompleta: Falta la clave 'Host' en appsettings.json (MailSettings:Host).");
+        }
+        if (_settings.Port is <= 0 or > 65535)
+        {
+            _logger.LogError("Configuración SMTP incompleta: La clave 'Port' en appsettings.json (MailSettings:Port) es inválida o nula.");
+        }
+        if (string.IsNullOrWhiteSpace(_settings.UserName))
+        {
+            _logger.LogError("Configuración SMTP incompleta: Falta la clave 'UserName' en appsettings.json (MailSettings:UserName).");
+        }
+        if (string.IsNullOrWhiteSpace(_settings.Password))
+        {
+            _logger.LogError("Configuración SMTP incompleta: Falta la clave 'Password' en appsettings.json (MailSettings:Password).");
+        }
+        if (string.IsNullOrWhiteSpace(_settings.FromEmail))
+        {
+            _logger.LogError("Configuración SMTP incompleta: Falta la clave 'FromEmail' en appsettings.json (MailSettings:FromEmail).");
+        }
+
         if (string.IsNullOrWhiteSpace(_settings.Host) ||
             _settings.Port is <= 0 or > 65535 ||
             string.IsNullOrWhiteSpace(_settings.UserName) ||
@@ -68,7 +93,7 @@ public class EmailService : IEmailService
             string.IsNullOrWhiteSpace(_settings.FromEmail))
         {
             throw new InvalidOperationException(
-                "La configuración SMTP está incompleta. Configura Host, Port, UserName, Password y FromEmail mediante User Secrets o variables de entorno.");
+                "La configuración SMTP está incompleta. Revisa las claves Host, Port, UserName, Password y FromEmail en appsettings.json.");
         }
     }
 }

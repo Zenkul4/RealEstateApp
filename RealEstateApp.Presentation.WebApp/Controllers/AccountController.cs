@@ -145,7 +145,7 @@ public class AccountController : Controller
                 await _fileStorageService.DeleteAsync(photoUrl, cancellationToken);
 
                 ModelState.AddModelError(string.Empty,
-                    "No pudimos enviar el correo de activación. Verifica la configuración SMTP e inténtalo nuevamente.");
+                    $"Error al enviar el correo de activación: {exception.Message}");
                 return View(viewModel);
             }
         }
