@@ -57,7 +57,7 @@ public class FavoritePropertyService : IFavoritePropertyService
         foreach (var favProp in clientFavorites)
         {
             var propWithIncludes = await _propertyRepository.GetByIdWithIncludeAsync(favProp.Id, p => p.PropertyType, p => p.SaleType, p => p.Images);
-            if (propWithIncludes != null)
+            if (propWithIncludes != null && propWithIncludes.Status == RealEstateApp.Core.Domain.Enums.PropertyStatus.Disponible)
             {
                 properties.Add(propWithIncludes);
             }

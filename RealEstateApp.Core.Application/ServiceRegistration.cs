@@ -24,6 +24,8 @@ public static class ServiceRegistration
         services.AddScoped<IImprovementService, ImprovementService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFavoritePropertyService, FavoritePropertyService>();
+        services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IOfferService, OfferService>();
 
         return services;
     }
