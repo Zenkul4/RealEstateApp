@@ -1,4 +1,3 @@
-// Interfaces/IImprovementService.cs
 namespace RealEstateApp.Core.Application.Interfaces;
 
 using System.Collections.Generic;

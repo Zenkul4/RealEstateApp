@@ -384,7 +384,6 @@ public class AccountService : IAccountService
             return new RegisterResponse { HasError = true, Error = "El usuario no existe." };
         }
 
-        // Validate uniqueness excluding current user
         var userWithSameEmail = await _userManager.FindByEmailAsync(email);
         if (userWithSameEmail != null && userWithSameEmail.Id != userId)
         {

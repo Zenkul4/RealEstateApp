@@ -1,4 +1,3 @@
-// ViewModels/Improvement/SaveImprovementViewModel.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace RealEstateApp.Core.Application.ViewModels.Improvement;

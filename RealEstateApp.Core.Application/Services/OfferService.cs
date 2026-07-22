@@ -87,15 +87,12 @@ public class OfferService : IOfferService
             throw new InvalidOperationException("No se pueden aceptar ofertas en una propiedad que ya está vendida.");
         }
 
-        // 1. Aceptar oferta actual
         offer.Status = OfferStatus.Aceptada;
         await _offerRepository.UpdateAsync(offer);
 
-        // 2. Cambiar propiedad a Vendida
         property.Status = PropertyStatus.Vendida;
         await _propertyRepository.UpdateAsync(property);
 
-        // 3. Rechazar todas las demás ofertas pendientes de esa propiedad
         var otherOffers = allOffers.Where(o => o.PropertyId == offer.PropertyId && o.Id != offerId && o.Status == OfferStatus.Pendiente).ToList();
         foreach (var other in otherOffers)
         {

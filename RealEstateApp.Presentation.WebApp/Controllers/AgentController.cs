@@ -45,7 +45,6 @@ public class AgentController : Controller
         string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         var properties = await _propertyService.GetAllWithInclude();
         
-        // Agent Isolation: Only properties belonging to this agent (both Disponible and Vendida)
         var agentProperties = properties.Where(p => p.AgentId == agentId).OrderByDescending(p => p.Id).ToList();
 
         return View(agentProperties);
@@ -61,7 +60,6 @@ public class AgentController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Get Client IDs who messaged
         var clientIds = await _messageService.GetClientIdsWhoMessagedPropertyAsync(id, agentId);
         var clientsWhoMessaged = new System.Collections.Generic.List<RealEstateApp.Core.Application.ViewModels.Account.UserViewModel>();
         foreach (var clientId in clientIds)
@@ -70,7 +68,6 @@ public class AgentController : Controller
             if (c != null) clientsWhoMessaged.Add(c);
         }
 
-        // Get Offers
         var offers = await _offerService.GetOffersByPropertyAsync(id);
         var offersWithClients = new System.Collections.Generic.List<(RealEstateApp.Core.Application.ViewModels.Offer.OfferViewModel Offer, string ClientName, string ClientEmail)>();
         foreach (var offer in offers)

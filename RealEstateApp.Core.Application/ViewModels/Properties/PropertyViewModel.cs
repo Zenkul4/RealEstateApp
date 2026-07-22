@@ -1,7 +1,3 @@
-// ViewModels/Properties/PropertyViewModel.cs
-// Corrección arquitectónica: Se ha cambiado el tipo de 'Price' y 'LandSize' de 'double' a 'decimal' 
-// para cumplir estrictamente con el estándar del proyecto y la regla de negocio (DOP).
-
 namespace RealEstateApp.Core.Application.ViewModels.Properties;
 
 public class PropertyViewModel

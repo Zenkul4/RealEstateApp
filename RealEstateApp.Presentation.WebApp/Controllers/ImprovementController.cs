@@ -128,7 +128,6 @@ public class ImprovementController : Controller
     {
         try
         {
-            // Deletes ONLY the improvement entity and its relationship links, DOES NOT delete properties
             await _improvementService.Delete(id);
             TempData["SuccessMessage"] = "Mejora eliminada correctamente. Las propiedades asociadas no fueron afectadas.";
         }

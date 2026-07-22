@@ -12,10 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Registro de las capas
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 builder.Services.AddWebAppIdentityInfrastructure(builder.Configuration);
@@ -39,7 +37,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -51,7 +48,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Authentication DEBE ir siempre antes de Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 

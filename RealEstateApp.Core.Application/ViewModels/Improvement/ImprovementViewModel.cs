@@ -1,4 +1,3 @@
-// ViewModels/Improvement/ImprovementViewModel.cs
 namespace RealEstateApp.Core.Application.ViewModels.Improvement;
 
 public class ImprovementViewModel

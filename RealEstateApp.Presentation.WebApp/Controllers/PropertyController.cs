@@ -41,7 +41,6 @@ public class PropertyController : Controller
         string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         
         var properties = await _propertyService.GetAllWithInclude();
-        // Maintenance list shows ALL properties owned by this agent (both Disponible and Vendida)
         var agentProperties = properties.Where(p => p.AgentId == agentId).OrderByDescending(p => p.Id).ToList();
         return View(agentProperties);
     }
@@ -102,7 +101,6 @@ public class PropertyController : Controller
             return View(vm);
         }
 
-        // Validación de negocio: Debe cargarse al menos una imagen
         if (vm.ImageOne == null && vm.ImageTwo == null && vm.ImageThree == null && vm.ImageFour == null)
         {
             ModelState.AddModelError(string.Empty, "Debe cargar al menos una imagen de la propiedad (de 1 a 4 imágenes).");
@@ -193,7 +191,6 @@ public class PropertyController : Controller
 
             var currentSaveVm = await _propertyService.GetByIdSaveViewModel(vm.Id);
 
-            // Comprobamos si tiene al menos una imagen activa tras el edit
             bool hasImageOne = vm.ImageOne != null || !string.IsNullOrEmpty(currentSaveVm.ImageOneUrl);
             bool hasImageTwo = vm.ImageTwo != null || !string.IsNullOrEmpty(currentSaveVm.ImageTwoUrl);
             bool hasImageThree = vm.ImageThree != null || !string.IsNullOrEmpty(currentSaveVm.ImageThreeUrl);
@@ -273,7 +270,6 @@ public class PropertyController : Controller
             return currentUrl ?? string.Empty;
         }
 
-        // Delete existing file if we are replacing it
         if (!string.IsNullOrEmpty(currentUrl))
         {
             string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, currentUrl.TrimStart('/'));

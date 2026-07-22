@@ -1,4 +1,3 @@
-﻿// Contexts/ApplicationDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Core.Domain.Common;
 using RealEstateApp.Core.Domain.Entities;
@@ -31,7 +30,6 @@ public class ApplicationDbContext : DbContext
             {
                 case EntityState.Added:
                     entry.Entity.Created = DateTime.UtcNow;
-                    // TODO: En el futuro, esto se debe poblar inyectando un ICurrentUserService
                     entry.Entity.CreatedBy = entry.Entity.CreatedBy ?? "SystemApp";
                     break;
                 case EntityState.Modified:
@@ -45,7 +43,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Aplica estrictamente todas las configuraciones IEntityTypeConfiguration<T> de este ensamblado
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }

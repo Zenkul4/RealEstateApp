@@ -1,4 +1,3 @@
-// ViewModels/SaleType/SaleTypeViewModel.cs
 namespace RealEstateApp.Core.Application.ViewModels.SaleType;
 
 public class SaleTypeViewModel

@@ -49,7 +49,6 @@ public class HomeController : Controller
     {
         var properties = await _propertyService.GetAllWithInclude();
 
-        // Apply filters
         if (propertyTypeId.HasValue)
         {
             properties = properties.Where(p => p.PropertyTypeId == propertyTypeId.Value).ToList();
@@ -75,14 +74,12 @@ public class HomeController : Controller
             properties = properties.Where(p => p.Bathrooms == bathrooms.Value).ToList();
         }
 
-        // Filter only available properties for the client/public view
         properties = properties.Where(p => 
             string.Equals(p.Status, "Disponible", StringComparison.OrdinalIgnoreCase) || 
             string.Equals(p.Status, "Available", StringComparison.OrdinalIgnoreCase) || 
             p.Status == "0"
         ).ToList();
 
-        // Filter out properties belonging to inactive agents from the public Home view
         try
         {
             var agents = await _userService.GetAllAgentsAsync();
@@ -91,10 +88,8 @@ public class HomeController : Controller
         }
         catch { }
 
-        // Order by Id (newest first)
         properties = properties.OrderByDescending(p => p.Id).ToList();
 
-        // Get Client Favorites to toggle icons
         string? clientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var favoriteIds = new System.Collections.Generic.List<int>();
         if (!string.IsNullOrEmpty(clientId))
@@ -104,13 +99,11 @@ public class HomeController : Controller
         }
         ViewBag.FavoriteIds = favoriteIds;
 
-        // Load property types and sale types for the dropdown filters
         var propertyTypes = await _propertyTypeService.GetAllWithInclude();
         var saleTypes = await _saleTypeService.GetAllWithInclude();
         ViewBag.PropertyTypes = new SelectList(propertyTypes, "Id", "Name", propertyTypeId);
         ViewBag.SaleTypes = new SelectList(saleTypes, "Id", "Name", saleTypeId);
 
-        // Keep filter values in ViewBag to display them in the form
         ViewBag.SelectedPropertyTypeId = propertyTypeId;
         ViewBag.SelectedSaleTypeId = saleTypeId;
         ViewBag.SelectedMinPrice = minPrice;
@@ -141,15 +134,12 @@ public class HomeController : Controller
             {
                 string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-                // Load Chat Messages
                 var chatMessages = await _messageService.GetConversationAsync(id, clientId, property.AgentId);
                 ViewBag.ChatMessages = chatMessages;
 
-                // Load Client Offers
                 var clientOffers = await _offerService.GetOffersByClientAndPropertyAsync(clientId, id);
                 ViewBag.ClientOffers = clientOffers;
 
-                // Evaluate Offer Rules
                 ViewBag.HasAcceptedOffer = await _offerService.HasAcceptedOfferAsync(id);
                 ViewBag.HasPendingOffer = await _offerService.HasPendingOfferAsync(clientId, id);
             }
@@ -302,7 +292,6 @@ public class HomeController : Controller
     {
         var agents = await _userService.GetAllAgentsAsync();
         
-        // Filter: only active agents
         agents = agents.Where(a => a.IsActive).ToList();
 
         if (!string.IsNullOrWhiteSpace(name))
@@ -314,7 +303,6 @@ public class HomeController : Controller
             ViewBag.SearchName = name;
         }
 
-        // Order alphabetically
         agents = agents.OrderBy(a => a.FullName).ToList();
 
         var properties = await _propertyService.GetAllWithInclude();

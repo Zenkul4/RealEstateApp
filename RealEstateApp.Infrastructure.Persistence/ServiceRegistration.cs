@@ -1,4 +1,3 @@
-// ServiceRegistration.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,13 +11,11 @@ public static class ServiceRegistration
 {
     public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Configuración del DbContext apuntando a SQL Server
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
                 m => m.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-        // Registro del repositorio genérico
         services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepository<>));
     }
 }

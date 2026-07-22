@@ -1,4 +1,3 @@
-﻿// EntityConfigurations/MessageConfiguration.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RealEstateApp.Core.Domain.Entities;

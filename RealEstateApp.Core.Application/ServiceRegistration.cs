@@ -1,4 +1,3 @@
-// ServiceRegistration.cs
 namespace RealEstateApp.Core.Application;
 
 using System.Reflection;

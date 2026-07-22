@@ -1,4 +1,3 @@
-// ViewModels/PropertyType/PropertyTypeViewModel.cs
 namespace RealEstateApp.Core.Application.ViewModels.PropertyType;
 
 public class PropertyTypeViewModel

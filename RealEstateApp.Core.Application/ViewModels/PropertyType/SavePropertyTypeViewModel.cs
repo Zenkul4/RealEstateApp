@@ -1,4 +1,3 @@
-// ViewModels/PropertyType/SavePropertyTypeViewModel.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace RealEstateApp.Core.Application.ViewModels.PropertyType;
