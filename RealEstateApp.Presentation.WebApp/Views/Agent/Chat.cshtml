@@ -1,0 +1,57 @@
+@model List<MessageViewModel>
+@using RealEstateApp.Core.Application.ViewModels.Message
+@using RealEstateApp.Core.Application.ViewModels.Account
+@{
+    var property = ViewBag.Property as PropertyViewModel;
+    var client = ViewBag.Client as UserViewModel;
+    ViewData["Title"] = $"Chat con {client?.FullName}";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Chat de Asesoría</h2>
+            <p class="text-brass m-0 fs-6 text-uppercase tracking-wider fw-bold">Cliente: @client?.FullName (@client?.Email) · Propiedad CÓD: @property?.Code</p>
+        </div>
+        <div>
+            <a asp-action="PropertyDetails" asp-route-id="@property?.Id" class="btn-outline-slate">Volver al panel</a>
+        </div>
+    </div>
+
+    <div class="architect-card p-4">
+        <div class="chat-history mb-3 p-3 bg-light border border-light rounded-0" style="max-height: 380px; overflow-y: auto;">
+            @if (Model == null || Model.Count == 0)
+            {
+                <p class="text-muted text-center my-3">No hay mensajes en esta conversación.</p>
+            }
+            else
+            {
+                @foreach (var msg in Model)
+                {
+                    <div class="d-flex mb-3 @(msg.IsFromClient ? "justify-content-start" : "justify-content-end")">
+                        <div class="p-3 shadow-sm rounded-0 style-message @(msg.IsFromClient ? "bg-white text-slate-dark border border-slate" : "bg-slate-dark text-white")" style="max-width: 80%;">
+                            <small class="d-block text-uppercase font-monospace fs-9 mb-1 opacity-75">
+                                @(msg.IsFromClient ? client?.FullName : "Usted (Asesor)") · @msg.Created.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                            <p class="m-0 fs-6">@msg.Content</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <form asp-action="SendMessage" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="propertyId" value="@property?.Id" />
+            <input type="hidden" name="clientId" value="@client?.Id" />
+            <div class="mb-3">
+                <textarea name="content" class="form-control rounded-0 border-slate" rows="3" placeholder="Escriba su respuesta al cliente..." required></textarea>
+            </div>
+            <button type="submit" class="btn-brass py-2 px-4 text-uppercase tracking-wider fs-7">Enviar Respuesta</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

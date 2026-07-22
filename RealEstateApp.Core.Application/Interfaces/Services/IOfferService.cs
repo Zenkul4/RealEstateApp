@@ -10,4 +10,7 @@ public interface IOfferService
     Task<bool> HasPendingOfferAsync(string clientId, int propertyId);
     Task<bool> HasAcceptedOfferAsync(int propertyId);
     Task AddAsync(SaveOfferViewModel vm);
+    Task<List<OfferViewModel>> GetOffersByPropertyAsync(int propertyId);
+    Task AcceptOfferAsync(int offerId, string agentId);
+    Task RejectOfferAsync(int offerId, string agentId);
 }

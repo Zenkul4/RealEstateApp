@@ -1,0 +1,137 @@
+@model PropertyViewModel
+@using RealEstateApp.Core.Application.ViewModels.Account
+@using RealEstateApp.Core.Application.ViewModels.Offer
+@{
+    ViewData["Title"] = $"Gestión de Propiedad CÓD: {Model.Code}";
+    var clientsWhoMessaged = ViewBag.ClientsWhoMessaged as List<UserViewModel> ?? new List<UserViewModel>();
+    var offersWithClients = ViewBag.OffersWithClients as List<(OfferViewModel Offer, string ClientName, string ClientEmail)> ?? new List<(OfferViewModel Offer, string ClientName, string ClientEmail)>();
+    bool isSold = Model.Status == "Vendida";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Panel de Gestión del Inmueble</h2>
+            <p class="text-brass m-0 fs-6 text-uppercase tracking-wider fw-bold">CÓD: @Model.Code · @Model.PropertyTypeName (@Model.SaleTypeName)</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (isSold)
+            {
+                <span class="badge bg-danger text-white px-3 py-2 fs-7 text-uppercase fw-bold">Vendida</span>
+            }
+            else
+            {
+                <span class="badge bg-success text-white px-3 py-2 fs-7 text-uppercase fw-bold">Disponible</span>
+            }
+            <a asp-action="Index" class="btn-outline-slate">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Client Conversations Section -->
+        <div class="col-lg-6 col-md-12">
+            <div class="architect-card p-4 h-100">
+                <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Conversaciones con Clientes</h4>
+                
+                @if (clientsWhoMessaged.Count == 0)
+                {
+                    <p class="text-muted m-0 my-3 text-center">No hay conversaciones iniciadas por clientes para esta propiedad.</p>
+                }
+                else
+                {
+                    <div class="list-group rounded-0">
+                        @foreach (var client in clientsWhoMessaged)
+                        {
+                            <a asp-action="Chat" asp-route-propertyId="@Model.Id" asp-route-clientId="@client.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 mb-2 border border-light shadow-sm">
+                                <div>
+                                    <h6 class="fw-bold text-slate-dark m-0">@client.FullName</h6>
+                                    <small class="text-muted fs-8">@client.Email · @client.Phone</small>
+                                </div>
+                                <span class="btn-outline-brass py-1 px-3 fs-8 text-uppercase">Abrir Chat</span>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Offers Received Section -->
+        <div class="col-lg-6 col-md-12">
+            <div class="architect-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-light">
+                    <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 m-0">Ofertas Recibidas</h4>
+                    <a asp-action="Offers" asp-route-propertyId="@Model.Id" class="btn-outline-brass fs-8 text-uppercase px-2 py-1">Ver Todas</a>
+                </div>
+
+                @if (offersWithClients.Count == 0)
+                {
+                    <p class="text-muted m-0 my-3 text-center">No se han registrado ofertas para esta propiedad.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle border border-light m-0">
+                            <thead class="table-light fs-8 text-uppercase">
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in offersWithClients)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="fw-semibold text-slate-dark d-block">@item.ClientName</span>
+                                            <small class="text-muted fs-9">@item.ClientEmail</small>
+                                        </td>
+                                        <td class="fw-bold text-slate-dark">@item.Offer.Amount.ToString("C") DOP</td>
+                                        <td>
+                                            @if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Pendiente)
+                                            {
+                                                <span class="badge bg-warning text-dark px-2 py-1 fs-9">Pendiente</span>
+                                            }
+                                            else if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Aceptada)
+                                            {
+                                                <span class="badge bg-success text-white px-2 py-1 fs-9">Aceptada</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger text-white px-2 py-1 fs-9">Rechazada</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Pendiente && !isSold)
+                                            {
+                                                <div class="d-flex gap-1">
+                                                    <form asp-action="AcceptOffer" method="post" class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="offerId" value="@item.Offer.Id" />
+                                                        <input type="hidden" name="propertyId" value="@Model.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-success rounded-0 fs-9 py-1 px-2">Aceptar</button>
+                                                    </form>
+                                                    <form asp-action="RejectOffer" method="post" class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="offerId" value="@item.Offer.Id" />
+                                                        <input type="hidden" name="propertyId" value="@Model.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-danger rounded-0 fs-9 py-1 px-2">Rechazar</button>
+                                                    </form>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted fs-9">Procesada</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -343,4 +343,20 @@ public class AccountService : IAccountService
             await _userManager.UpdateAsync(user);
         }
     }
+
+    public async Task UpdateUserProfileAsync(string userId, string firstName, string lastName, string phone, string? photoUrl)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.PhoneNumber = phone;
+            if (!string.IsNullOrEmpty(photoUrl))
+            {
+                user.PhotoUrl = photoUrl;
+            }
+            await _userManager.UpdateAsync(user);
+        }
+    }
 }

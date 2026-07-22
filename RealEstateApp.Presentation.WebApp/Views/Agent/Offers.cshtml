@@ -1,0 +1,99 @@
+@model List<(RealEstateApp.Core.Application.ViewModels.Offer.OfferViewModel Offer, string ClientName, string ClientEmail)>
+@{
+    var property = ViewBag.Property as PropertyViewModel;
+    ViewData["Title"] = $"Ofertas CÓD: {property?.Code}";
+    bool isSold = property?.Status == "Vendida";
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Ofertas Recibidas sobre la Propiedad</h2>
+            <p class="text-brass m-0 fs-6 text-uppercase tracking-wider fw-bold">CÓD: @property?.Code · @property?.PropertyTypeName (@property?.SaleTypeName)</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (isSold)
+            {
+                <span class="badge bg-danger text-white px-3 py-2 fs-7 text-uppercase fw-bold">Vendida</span>
+            }
+            else
+            {
+                <span class="badge bg-success text-white px-3 py-2 fs-7 text-uppercase fw-bold">Disponible</span>
+            }
+            <a asp-action="PropertyDetails" asp-route-id="@property?.Id" class="btn-outline-slate">Volver al panel</a>
+        </div>
+    </div>
+
+    <div class="architect-card p-4">
+        @if (Model == null || Model.Count == 0)
+        {
+            <p class="text-muted text-center my-4">No hay ofertas registradas para esta propiedad.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle border border-light">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Monto Ofertado</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones de Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Offer.Created.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <span class="fw-bold text-slate-dark d-block">@item.ClientName</span>
+                                    <small class="text-muted">@item.ClientEmail</small>
+                                </td>
+                                <td class="fw-bold fs-6 text-slate-dark">@item.Offer.Amount.ToString("C") DOP</td>
+                                <td>
+                                    @if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Pendiente)
+                                    {
+                                        <span class="badge bg-warning text-dark px-3 py-2 fs-8">Pendiente</span>
+                                    }
+                                    else if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Aceptada)
+                                    {
+                                        <span class="badge bg-success text-white px-3 py-2 fs-8">Aceptada</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger text-white px-3 py-2 fs-8">Rechazada</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (item.Offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Pendiente && !isSold)
+                                    {
+                                        <div class="d-inline-flex gap-2">
+                                            <form asp-action="AcceptOffer" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="offerId" value="@item.Offer.Id" />
+                                                <input type="hidden" name="propertyId" value="@property?.Id" />
+                                                <button type="submit" class="btn btn-success rounded-0 fs-8 text-uppercase tracking-wider px-3 py-2">Aceptar Oferta</button>
+                                            </form>
+                                            <form asp-action="RejectOffer" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="offerId" value="@item.Offer.Id" />
+                                                <input type="hidden" name="propertyId" value="@property?.Id" />
+                                                <button type="submit" class="btn btn-danger rounded-0 fs-8 text-uppercase tracking-wider px-3 py-2">Rechazar</button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fs-8">Sin acciones disponibles</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
