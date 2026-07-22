@@ -6,6 +6,7 @@ using RealEstateApp.Core.Application.ViewModels.SaleType;
 namespace RealEstateApp.Presentation.WebApi.Controllers;
 
 [ApiController]
+[Route("api/saletypes")]
 [Route("api/sale-types")]
 [Authorize(Roles = "Administrador,Desarrollador")]
 public class SaleTypesController : ControllerBase

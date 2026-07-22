@@ -6,7 +6,7 @@ using RealEstateApp.Core.Application.ViewModels.Improvement;
 namespace RealEstateApp.Presentation.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/improvements")]
 [Authorize(Roles = "Administrador,Desarrollador")]
 public class ImprovementsController : ControllerBase
 {

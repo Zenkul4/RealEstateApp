@@ -6,6 +6,7 @@ using RealEstateApp.Core.Application.ViewModels.PropertyType;
 namespace RealEstateApp.Presentation.WebApi.Controllers;
 
 [ApiController]
+[Route("api/propertytypes")]
 [Route("api/property-types")]
 [Authorize(Roles = "Administrador,Desarrollador")]
 public class PropertyTypesController : ControllerBase

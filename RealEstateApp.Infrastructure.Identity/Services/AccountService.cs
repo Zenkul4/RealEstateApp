@@ -58,6 +58,15 @@ public class AccountService : IAccountService
 
         var rolesList = await _userManager.GetRolesAsync(user);
 
+        if (!rolesList.Any(role => role is "Administrador" or "Desarrollador"))
+        {
+            return new AuthenticationResponse
+            {
+                HasError = true,
+                Error = "Este usuario no está autorizado para iniciar sesión en la WebAPI."
+            };
+        }
+
         var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
@@ -68,7 +77,9 @@ public class AccountService : IAccountService
 
         claims.AddRange(rolesList.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var key = _configuration["JWTSettings:Key"] ?? "SuperSecretKeyForDevelopmentRealEstateAppIdentity";
+        var key = _configuration["JWTSettings:Key"]
+            ?? throw new InvalidOperationException(
+                "JWTSettings:Key debe configurarse mediante User Secrets o variables de entorno.");
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
 

@@ -77,8 +77,7 @@
                 <div class="row g-4">
                     @foreach (var property in Model)
                     {
-                        var hasImage = property.ImageUrls != null && property.ImageUrls.Count > 0;
-                        var mainImage = hasImage ? property.ImageUrls[0] : "/images/placeholder.jpg";
+                        var mainImage = property.ImageUrls?.FirstOrDefault() ?? "/images/placeholder.jpg";
                         var isFavorite = favoriteIds.Contains(property.Id);
 
                         <div class="col-lg-6 col-md-12 col-sm-12">

@@ -7,7 +7,7 @@ using RealEstateApp.Presentation.WebApi.Models;
 namespace RealEstateApp.Presentation.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/agents")]
 [Authorize(Roles = "Administrador,Desarrollador")]
 public class AgentsController : ControllerBase
 {

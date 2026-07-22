@@ -16,6 +16,7 @@ public class AccountController : ControllerBase
         _accountService = accountService;
     }
 
+    [HttpPost("authenticate")]
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType<AuthenticationResponse>(StatusCodes.Status200OK)]
@@ -25,10 +26,12 @@ public class AccountController : ControllerBase
         return response.HasError ? Unauthorized(new { response.Error }) : Ok(response);
     }
 
+    [HttpPost("register-developer")]
     [HttpPost("developers")]
     [Authorize(Roles = "Administrador")]
     public Task<IActionResult> RegisterDeveloper(RegisterRequest request) => Register(request, UserType.Developer);
 
+    [HttpPost("register-admin")]
     [HttpPost("administrators")]
     [Authorize(Roles = "Administrador")]
     public Task<IActionResult> RegisterAdministrator(RegisterRequest request) => Register(request, UserType.Administrator);

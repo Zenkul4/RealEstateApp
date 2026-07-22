@@ -5,7 +5,7 @@ using RealEstateApp.Core.Application.Interfaces;
 namespace RealEstateApp.Presentation.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/properties")]
 [Authorize(Roles = "Administrador,Desarrollador")]
 public class PropertiesController : ControllerBase
 {
