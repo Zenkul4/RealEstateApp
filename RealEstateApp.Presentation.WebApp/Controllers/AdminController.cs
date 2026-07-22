@@ -187,7 +187,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (id == currentAdminId)
         {
-            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
+            TempData["ErrorMessage"] = "No puede editar ni cambiar el estado de su propia cuenta de administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
@@ -219,7 +219,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (vm.Id == currentAdminId)
         {
-            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
+            TempData["ErrorMessage"] = "No puede editar ni cambiar el estado de su propia cuenta de administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
@@ -246,7 +246,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (adminId == currentAdminId)
         {
-            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
+            TempData["ErrorMessage"] = "No puede editar ni cambiar el estado de su propia cuenta de administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
@@ -256,7 +256,7 @@ public class AdminController : Controller
             int activeCount = admins.Count(a => a.IsActive);
             if (activeCount <= 1)
             {
-                TempData["ErrorMessage"] = "REGLA DE SEGURIDAD: No se puede inactivar este administrador porque el sistema se quedaría sin administradores activos.";
+                TempData["ErrorMessage"] = "No es posible inactivar/eliminar al único Administrador activo del sistema.";
                 return RedirectToAction(nameof(Admins));
             }
         }
