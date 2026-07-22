@@ -6,6 +6,8 @@ using RealEstateApp.Core.Application.ViewModels.Improvement;
 using RealEstateApp.Core.Application.ViewModels.Properties;
 using RealEstateApp.Core.Application.ViewModels.PropertyType;
 using RealEstateApp.Core.Application.ViewModels.SaleType;
+using RealEstateApp.Core.Application.ViewModels.Message;
+using RealEstateApp.Core.Application.ViewModels.Offer;
 using RealEstateApp.Core.Domain.Entities;
 
 namespace RealEstateApp.Core.Application.Mappings;
@@ -42,5 +44,11 @@ public class GeneralProfile : Profile
 
         CreateMap<UserDto, UserViewModel>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+
+        CreateMap<Message, MessageViewModel>().ReverseMap();
+        CreateMap<Message, SaveMessageViewModel>().ReverseMap();
+
+        CreateMap<Offer, OfferViewModel>().ReverseMap();
+        CreateMap<Offer, SaveOfferViewModel>().ReverseMap();
     }
 }

@@ -1,6 +1,14 @@
 @model PropertyViewModel
+@using RealEstateApp.Core.Application.ViewModels.Message
+@using RealEstateApp.Core.Application.ViewModels.Offer
 @{
     ViewData["Title"] = $"Propiedad CÓD: {Model.Code}";
+    var chatMessages = ViewBag.ChatMessages as List<MessageViewModel> ?? new List<MessageViewModel>();
+    var clientOffers = ViewBag.ClientOffers as List<OfferViewModel> ?? new List<OfferViewModel>();
+    bool isAvailable = ViewBag.IsPropertyAvailable ?? (Model.Status == "Disponible");
+    bool hasAcceptedOffer = ViewBag.HasAcceptedOffer ?? false;
+    bool hasPendingOffer = ViewBag.HasPendingOffer ?? false;
+    bool isClient = User.Identity?.IsAuthenticated == true && (User.IsInRole("Cliente") || User.IsInRole("Client"));
 }
 
 <div class="container px-4 mt-4 mb-5">
@@ -14,20 +22,23 @@
             @{
                 bool isFavorite = ViewBag.IsFavorite ?? false;
             }
-            <form asp-controller="Favorite" asp-action="ToggleFavorite" method="post" class="m-0">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="propertyId" value="@Model.Id" />
-                <button type="submit" class="btn btn-white btn-sm shadow-sm rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 42px; height: 42px; border: 1px solid #cbd5e1;">
-                    @if (isFavorite)
-                    {
-                        <span class="text-danger fs-4" style="line-height:1;">♥</span>
-                    }
-                    else
-                    {
-                        <span class="text-secondary fs-4" style="line-height:1;">♡</span>
-                    }
-                </button>
-            </form>
+            @if (isClient)
+            {
+                <form asp-controller="Favorite" asp-action="ToggleFavorite" method="post" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="propertyId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-white btn-sm shadow-sm rounded-circle d-flex align-items-center justify-content-center p-2" style="width: 42px; height: 42px; border: 1px solid #cbd5e1;">
+                        @if (isFavorite)
+                        {
+                            <span class="text-danger fs-4" style="line-height:1;">♥</span>
+                        }
+                        else
+                        {
+                            <span class="text-secondary fs-4" style="line-height:1;">♡</span>
+                        }
+                    </button>
+                </form>
+            }
             <a asp-action="Index" class="btn-outline-slate">Volver al listado</a>
         </div>
     </div>
@@ -35,6 +46,18 @@
     <div class="row g-4">
         <!-- Left Side: Property Specs and Images -->
         <div class="col-lg-8 col-md-12 col-sm-12">
+            <!-- Status Badge -->
+            <div class="mb-3">
+                @if (isAvailable)
+                {
+                    <span class="badge bg-success text-white px-3 py-2 fs-7 text-uppercase fw-bold">Disponible</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger text-white px-3 py-2 fs-7 text-uppercase fw-bold">Vendida</span>
+                }
+            </div>
+
             <!-- Carousel of Images -->
             <div class="architect-card mb-4 overflow-hidden">
                 @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
@@ -56,11 +79,11 @@
                         </div>
                         @if (Model.ImageUrls.Count > 1)
                         {
-                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="prev">
+                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide-to="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Anterior</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide="next">
+                            <button class="carousel-control-next" type="button" data-bs-target="#propertyImagesCarousel" data-bs-slide-to="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Siguiente</span>
                             </button>
@@ -112,7 +135,7 @@
             </div>
 
             <!-- Improvements checklist -->
-            <div class="architect-card p-4">
+            <div class="architect-card p-4 mb-4">
                 <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Mejoras e Instalaciones Incluidas</h4>
                 @if (Model.ImprovementNames == null || Model.ImprovementNames.Count == 0)
                 {
@@ -133,6 +156,100 @@
                     </div>
                 }
             </div>
+
+            <!-- Client Chat & Messages Section -->
+            @if (isClient)
+            {
+                <div class="architect-card p-4 mb-4">
+                    <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Conversación con el Asesor</h4>
+                    
+                    <div class="chat-history mb-3 p-3 bg-light border border-light rounded-0" style="max-height: 300px; overflow-y: auto;">
+                        @if (chatMessages.Count == 0)
+                        {
+                            <p class="text-muted text-center my-3">No hay mensajes previos en este chat. Inicie la conversación a continuación.</p>
+                        }
+                        else
+                        {
+                            @foreach (var msg in chatMessages)
+                            {
+                                <div class="d-flex mb-3 @(msg.IsFromClient ? "justify-content-end" : "justify-content-start")">
+                                    <div class="p-3 shadow-sm rounded-0 style-message @(msg.IsFromClient ? "bg-slate-dark text-white" : "bg-white text-slate-dark border border-slate")" style="max-width: 80%;">
+                                        <small class="d-block text-uppercase font-monospace fs-9 mb-1 opacity-75">
+                                            @(msg.IsFromClient ? "Usted" : (ViewBag.AgentName ?? "Asesor")) · @msg.Created.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                        <p class="m-0 fs-6">@msg.Content</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    @if (isAvailable)
+                    {
+                        <form asp-controller="Home" asp-action="SendMessage" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="propertyId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <textarea name="content" class="form-control rounded-0 border-slate" rows="3" placeholder="Escriba su mensaje al asesor..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-brass py-2 px-4 text-uppercase tracking-wider fs-7">Enviar Mensaje</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary m-0 rounded-0 fs-7">
+                            El envío de mensajes está deshabilitado porque la propiedad no se encuentra disponible.
+                        </div>
+                    }
+                </div>
+
+                <!-- Client Offers History Section -->
+                <div class="architect-card p-4">
+                    <h4 class="fw-bold text-slate-dark text-uppercase tracking-wider fs-6 mb-3 border-bottom pb-2 border-light">Historial de Mis Ofertas</h4>
+                    
+                    @if (clientOffers.Count == 0)
+                    {
+                        <p class="text-muted mb-3">No ha realizado ninguna oferta para esta propiedad.</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive mb-3">
+                            <table class="table table-hover align-middle border border-light">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Monto Ofertado</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var offer in clientOffers)
+                                    {
+                                        <tr>
+                                            <td>@offer.Created.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td class="fw-bold">@offer.Amount.ToString("C") DOP</td>
+                                            <td>
+                                                @if (offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Pendiente)
+                                                {
+                                                    <span class="badge bg-warning text-dark px-2 py-1">Pendiente</span>
+                                                }
+                                                else if (offer.Status == RealEstateApp.Core.Domain.Enums.OfferStatus.Aceptada)
+                                                {
+                                                    <span class="badge bg-success text-white px-2 py-1">Aceptada</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger text-white px-2 py-1">Rechazada</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            }
         </div>
 
         <!-- Right Side: Agent Info & Contact/Offer Forms -->
@@ -176,69 +293,45 @@
                         </div>
                     </div>
 
-                    @if (!User.IsInRole("Agente") && !User.IsInRole("Administrador"))
+                    @if (isClient)
                     {
-                        <!-- Tabs for Forms -->
                         <div class="border-top border-light pt-3 text-start">
-                            <ul class="nav nav-tabs rounded-0 mb-3" id="contactTabs" role="tablist">
-                                <li class="nav-item" role="presentation" style="width: 50%;">
-                                    <button class="nav-link active w-100 rounded-0 fs-8 text-uppercase fw-bold text-slate-dark border-light py-2" id="msg-tab" data-bs-toggle="tab" data-bs-target="#msg-pane" type="button" role="tab">Mensaje</button>
-                                </li>
-                                <li class="nav-item" role="presentation" style="width: 50%;">
-                                    <button class="nav-link w-100 rounded-0 fs-8 text-uppercase fw-bold text-slate-dark border-light py-2" id="offer-tab" data-bs-toggle="tab" data-bs-target="#offer-pane" type="button" role="tab">Oferta</button>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="contactTabsContent">
-                                <!-- Send Message Pane -->
-                                <div class="tab-pane fade show active" id="msg-pane" role="tabpanel" tabindex="0">
-                                    <form asp-controller="Home" asp-action="ContactAgent" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="propertyId" value="@Model.Id" />
-                                        
-                                        <div class="mb-2">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Nombre</label>
-                                            <input type="text" name="clientName" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "")" />
-                                        </div>
-                                        <div class="mb-2">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Correo</label>
-                                            <input type="email" name="clientEmail" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value : "")" />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Mensaje</label>
-                                            <textarea name="messageText" class="form-control form-control-sm rounded-0 border-slate" rows="3" required placeholder="Escriba su consulta..."></textarea>
-                                        </div>
-                                        <button type="submit" class="btn-brass w-100 py-2 fs-8 text-uppercase tracking-wider">Enviar Mensaje</button>
-                                    </form>
+                            <h6 class="fw-bold text-uppercase tracking-wider fs-8 text-slate-dark mb-2">Realizar Oferta de Compra</h6>
+                            
+                            @if (!isAvailable)
+                            {
+                                <div class="alert alert-warning rounded-0 fs-8 m-0 mb-2">
+                                    Las ofertas están deshabilitadas porque la propiedad no se encuentra disponible.
                                 </div>
-                                
-                                <!-- Make Offer Pane -->
-                                <div class="tab-pane fade" id="offer-pane" role="tabpanel" tabindex="0">
-                                    <form asp-controller="Home" asp-action="MakeOffer" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="propertyId" value="@Model.Id" />
-                                        
-                                        <div class="mb-2">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Nombre</label>
-                                            <input type="text" name="clientName" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "")" />
-                                        </div>
-                                        <div class="mb-2">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Correo</label>
-                                            <input type="email" name="clientEmail" class="form-control form-control-sm rounded-0 border-slate" required value="@(User.Identity?.IsAuthenticated == true ? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value : "")" />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Monto de Oferta (DOP)</label>
-                                            <input type="number" name="offerAmount" step="0.01" min="0.01" class="form-control form-control-sm rounded-0 border-slate font-monospace" required placeholder="Ej. 1500000" />
-                                        </div>
-                                        <button type="submit" class="btn-brass w-100 py-2 fs-8 text-uppercase tracking-wider">Enviar Oferta</button>
-                                    </form>
+                                <button type="button" class="btn btn-secondary w-100 py-2 fs-8 text-uppercase tracking-wider rounded-0" disabled>Enviar Nueva Oferta</button>
+                            }
+                            else if (hasAcceptedOffer)
+                            {
+                                <div class="alert alert-warning rounded-0 fs-8 m-0 mb-2">
+                                    Las ofertas están deshabilitadas porque la propiedad ya tiene una oferta aceptada.
                                 </div>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="border-top border-light pt-3 text-center text-muted fs-8">
-                            Las opciones de mensaje u oferta no están disponibles para asesores o administradores.
+                                <button type="button" class="btn btn-secondary w-100 py-2 fs-8 text-uppercase tracking-wider rounded-0" disabled>Enviar Nueva Oferta</button>
+                            }
+                            else if (hasPendingOffer)
+                            {
+                                <div class="alert alert-info rounded-0 fs-8 m-0 mb-2 fw-semibold">
+                                    Ya tiene una oferta pendiente para esta propiedad.
+                                </div>
+                                <button type="button" class="btn btn-secondary w-100 py-2 fs-8 text-uppercase tracking-wider rounded-0" disabled>Enviar Nueva Oferta</button>
+                            }
+                            else
+                            {
+                                <form asp-controller="Home" asp-action="SendOffer" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="propertyId" value="@Model.Id" />
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fs-9 text-uppercase tracking-wider fw-bold text-muted mb-1">Monto Ofertado (DOP)</label>
+                                        <input type="number" name="amount" step="0.01" min="0.01" class="form-control form-control-sm rounded-0 border-slate font-monospace" required placeholder="Ej. 2500000.00" />
+                                    </div>
+                                    <button type="submit" class="btn-brass w-100 py-2 fs-8 text-uppercase tracking-wider">Enviar Nueva Oferta</button>
+                                </form>
+                            }
                         </div>
                     }
                 </div>
@@ -246,3 +339,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -32,16 +32,16 @@
                                     <a class="nav-link px-3" asp-controller="Property" asp-action="Index">Mis propiedades</a>
                                 </li>
                             }
-                            else if (User.IsInRole("Cliente"))
+                            else if (User.IsInRole("Cliente") || User.IsInRole("Client"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="Home" asp-action="Index">Buscador</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link px-3" asp-controller="Favorite" asp-action="Index">Mis favoritos</a>
+                                    <a class="nav-link px-3" asp-controller="Home" asp-action="Index">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link px-3" asp-controller="Home" asp-action="Agents">Agentes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link px-3" asp-controller="Favorite" asp-action="Index">Mis propiedades</a>
                                 </li>
                             }
                             else if (User.IsInRole("Administrador"))

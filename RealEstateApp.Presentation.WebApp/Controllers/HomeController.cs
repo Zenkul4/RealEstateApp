@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Presentation.WebApp.Models;
+using RealEstateApp.Core.Application.ViewModels.Message;
+using RealEstateApp.Core.Application.ViewModels.Offer;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
@@ -20,6 +22,8 @@ public class HomeController : Controller
     private readonly IFavoritePropertyService _favoritePropertyService;
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
+    private readonly IMessageService _messageService;
+    private readonly IOfferService _offerService;
 
     public HomeController(
         IPropertyService propertyService,
@@ -27,7 +31,9 @@ public class HomeController : Controller
         ISaleTypeService saleTypeService,
         IFavoritePropertyService favoritePropertyService,
         IUserService userService,
-        IEmailService emailService)
+        IEmailService emailService,
+        IMessageService messageService,
+        IOfferService offerService)
     {
         _propertyService = propertyService;
         _propertyTypeService = propertyTypeService;
@@ -35,6 +41,8 @@ public class HomeController : Controller
         _favoritePropertyService = favoritePropertyService;
         _userService = userService;
         _emailService = emailService;
+        _messageService = messageService;
+        _offerService = offerService;
     }
 
     public async Task<IActionResult> Index(int? propertyTypeId, int? saleTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms)
@@ -66,6 +74,12 @@ public class HomeController : Controller
         {
             properties = properties.Where(p => p.Bathrooms == bathrooms.Value).ToList();
         }
+
+        // Filter only available properties for the client/public view
+        properties = properties.Where(p => p.Status == "Disponible").ToList();
+
+        // Order by Id (newest first)
+        properties = properties.OrderByDescending(p => p.Id).ToList();
 
         // Get Client Favorites to toggle icons
         string? clientId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -107,12 +121,124 @@ public class HomeController : Controller
                 ViewBag.AgentPhone = agent.Phone;
                 ViewBag.AgentPhotoUrl = agent.PhotoUrl;
             }
+
+            ViewBag.IsPropertyAvailable = property.Status == "Disponible";
+
+            if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Cliente") || User.IsInRole("Client")))
+            {
+                string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+                // Load Chat Messages
+                var chatMessages = await _messageService.GetConversationAsync(id, clientId, property.AgentId);
+                ViewBag.ChatMessages = chatMessages;
+
+                // Load Client Offers
+                var clientOffers = await _offerService.GetOffersByClientAndPropertyAsync(clientId, id);
+                ViewBag.ClientOffers = clientOffers;
+
+                // Evaluate Offer Rules
+                ViewBag.HasAcceptedOffer = await _offerService.HasAcceptedOfferAsync(id);
+                ViewBag.HasPendingOffer = await _offerService.HasPendingOfferAsync(clientId, id);
+            }
+
             return View(property);
         }
         catch (KeyNotFoundException)
         {
             return NotFound();
         }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente,Client")]
+    public async Task<IActionResult> SendMessage(int propertyId, string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            TempData["ErrorMessage"] = "El mensaje no puede estar vacío.";
+            return RedirectToAction(nameof(Details), new { id = propertyId });
+        }
+
+        try
+        {
+            var property = await _propertyService.GetByIdWithInclude(propertyId);
+            if (property.Status != "Disponible")
+            {
+                TempData["ErrorMessage"] = "No se pueden enviar mensajes sobre una propiedad que no esté disponible.";
+                return RedirectToAction(nameof(Details), new { id = propertyId });
+            }
+
+            string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await _messageService.AddAsync(new SaveMessageViewModel
+            {
+                PropertyId = propertyId,
+                ClientId = clientId,
+                AgentId = property.AgentId,
+                Content = content.Trim()
+            }, clientId);
+
+            TempData["SuccessMessage"] = "Mensaje enviado exitosamente al agente.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Error al enviar el mensaje: {ex.Message}";
+        }
+
+        return RedirectToAction(nameof(Details), new { id = propertyId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente,Client")]
+    public async Task<IActionResult> SendOffer(int propertyId, decimal amount)
+    {
+        if (amount <= 0)
+        {
+            TempData["ErrorMessage"] = "El monto ofertado debe ser mayor a 0.";
+            return RedirectToAction(nameof(Details), new { id = propertyId });
+        }
+
+        try
+        {
+            var property = await _propertyService.GetByIdWithInclude(propertyId);
+            if (property.Status != "Disponible")
+            {
+                TempData["ErrorMessage"] = "No se pueden realizar ofertas sobre una propiedad que no esté disponible.";
+                return RedirectToAction(nameof(Details), new { id = propertyId });
+            }
+
+            string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            bool hasAcceptedOffer = await _offerService.HasAcceptedOfferAsync(propertyId);
+            if (hasAcceptedOffer)
+            {
+                TempData["ErrorMessage"] = "Esta propiedad ya tiene una oferta aceptada.";
+                return RedirectToAction(nameof(Details), new { id = propertyId });
+            }
+
+            bool hasPendingOffer = await _offerService.HasPendingOfferAsync(clientId, propertyId);
+            if (hasPendingOffer)
+            {
+                TempData["ErrorMessage"] = "Ya tiene una oferta pendiente para esta propiedad.";
+                return RedirectToAction(nameof(Details), new { id = propertyId });
+            }
+
+            await _offerService.AddAsync(new SaveOfferViewModel
+            {
+                PropertyId = propertyId,
+                ClientId = clientId,
+                Amount = amount
+            });
+
+            TempData["SuccessMessage"] = "Oferta enviada exitosamente. Se encuentra en estado Pendiente.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Error al realizar la oferta: {ex.Message}";
+        }
+
+        return RedirectToAction(nameof(Details), new { id = propertyId });
     }
 
     [Authorize(Roles = "Cliente")]

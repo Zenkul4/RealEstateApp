@@ -7,7 +7,7 @@ using RealEstateApp.Core.Application.Interfaces.Services;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
-[Authorize(Roles = "Cliente")]
+[Authorize(Roles = "Cliente,Client")]
 public class FavoriteController : Controller
 {
     private readonly IFavoritePropertyService _favoritePropertyService;
@@ -19,7 +19,7 @@ public class FavoriteController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         var favorites = await _favoritePropertyService.GetFavoritesByClientAsync(clientId);
         return View(favorites);
     }
@@ -28,20 +28,40 @@ public class FavoriteController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(int propertyId)
     {
-        string clientId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         var isFav = await _favoritePropertyService.IsFavoriteAsync(propertyId, clientId);
 
         if (isFav)
         {
             await _favoritePropertyService.DeleteAsync(propertyId, clientId);
-            TempData["SuccessMessage"] = "Propiedad eliminada de favoritos.";
+            TempData["SuccessMessage"] = "La propiedad fue eliminada de sus favoritas correctamente.";
         }
         else
         {
             await _favoritePropertyService.AddAsync(propertyId, clientId);
-            TempData["SuccessMessage"] = "Propiedad agregada a favoritos.";
+            TempData["SuccessMessage"] = "La propiedad fue agregada a sus favoritas correctamente.";
         }
 
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddFavorite(int propertyId)
+    {
+        string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        await _favoritePropertyService.AddAsync(propertyId, clientId);
+        TempData["SuccessMessage"] = "La propiedad fue agregada a sus favoritas correctamente.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveFavorite(int propertyId)
+    {
+        string clientId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        await _favoritePropertyService.DeleteAsync(propertyId, clientId);
+        TempData["SuccessMessage"] = "La propiedad fue eliminada de sus favoritas correctamente.";
         return RedirectToAction(nameof(Index));
     }
 }
