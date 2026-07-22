@@ -17,7 +17,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
+                .HasAnnotation("ProductVersion", "9.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -192,7 +192,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("RealEstateApp.Core.Domain.Entities.Property", b =>

@@ -1,7 +1,7 @@
-﻿namespace RealEstateApp.Core.Domain.Enums;
+namespace RealEstateApp.Core.Domain.Enums;
 
 public enum PropertyStatus
 {
-    Disponible = 1,
-    Vendida = 2
+    Disponible = 0,
+    Vendida = 1
 }

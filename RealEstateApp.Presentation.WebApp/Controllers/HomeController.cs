@@ -76,7 +76,20 @@ public class HomeController : Controller
         }
 
         // Filter only available properties for the client/public view
-        properties = properties.Where(p => p.Status == "Disponible").ToList();
+        properties = properties.Where(p => 
+            string.Equals(p.Status, "Disponible", StringComparison.OrdinalIgnoreCase) || 
+            string.Equals(p.Status, "Available", StringComparison.OrdinalIgnoreCase) || 
+            p.Status == "0"
+        ).ToList();
+
+        // Filter out properties belonging to inactive agents from the public Home view
+        try
+        {
+            var agents = await _userService.GetAllAgentsAsync();
+            var activeAgentIds = agents.Where(a => a.IsActive).Select(a => a.Id).ToHashSet();
+            properties = properties.Where(p => activeAgentIds.Contains(p.AgentId)).ToList();
+        }
+        catch { }
 
         // Order by Id (newest first)
         properties = properties.OrderByDescending(p => p.Id).ToList();
@@ -122,7 +135,7 @@ public class HomeController : Controller
                 ViewBag.AgentPhotoUrl = agent.PhotoUrl;
             }
 
-            ViewBag.IsPropertyAvailable = property.Status == "Disponible";
+            ViewBag.IsPropertyAvailable = string.Equals(property.Status, "Disponible", StringComparison.OrdinalIgnoreCase) || string.Equals(property.Status, "Available", StringComparison.OrdinalIgnoreCase) || property.Status == "0";
 
             if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Cliente") || User.IsInRole("Client")))
             {

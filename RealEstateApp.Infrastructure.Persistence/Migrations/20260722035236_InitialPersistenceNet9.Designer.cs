@@ -12,15 +12,15 @@ using RealEstateApp.Infrastructure.Persistence.Contexts;
 namespace RealEstateApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260714212023_InitialPersistence")]
-    partial class InitialPersistence
+    [Migration("20260722035236_InitialPersistenceNet9")]
+    partial class InitialPersistenceNet9
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
+                .HasAnnotation("ProductVersion", "9.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -195,7 +195,7 @@ namespace RealEstateApp.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("RealEstateApp.Core.Domain.Entities.Property", b =>

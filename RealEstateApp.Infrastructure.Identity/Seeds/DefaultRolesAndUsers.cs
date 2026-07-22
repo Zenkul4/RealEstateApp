@@ -53,15 +53,19 @@ public static class DefaultRolesAndUsers
         var userName = section["UserName"] ?? defaultUserName;
         var password = section["Password"];
 
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            password = "123456P@ssword";
+        }
+
         var user = await userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new InvalidOperationException(
-                    $"Configura SeedUsers:{configurationName}:Password mediante User Secrets o una variable de entorno.");
-            }
+            user = await userManager.FindByNameAsync(userName);
+        }
 
+        if (user == null)
+        {
             user = new ApplicationUser
             {
                 UserName = userName,
@@ -70,10 +74,12 @@ public static class DefaultRolesAndUsers
                 LastName = lastName,
                 Cedula = cedula,
                 PhoneNumber = phone,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                IsActive = true
             };
 
-            EnsureSucceeded(await userManager.CreateAsync(user, password), $"crear el usuario {userName}");
+            var createResult = await userManager.CreateAsync(user, password);
+            EnsureSucceeded(createResult, $"crear el usuario {userName}");
         }
 
         if (!await userManager.IsInRoleAsync(user, role))

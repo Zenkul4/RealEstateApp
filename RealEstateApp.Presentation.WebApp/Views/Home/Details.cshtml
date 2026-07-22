@@ -5,7 +5,7 @@
     ViewData["Title"] = $"Propiedad CÓD: {Model.Code}";
     var chatMessages = ViewBag.ChatMessages as List<MessageViewModel> ?? new List<MessageViewModel>();
     var clientOffers = ViewBag.ClientOffers as List<OfferViewModel> ?? new List<OfferViewModel>();
-    bool isAvailable = ViewBag.IsPropertyAvailable ?? (Model.Status == "Disponible");
+    bool isAvailable = ViewBag.IsPropertyAvailable ?? (Model.Status == "Disponible" || Model.Status == "Available" || Model.Status == "0");
     bool hasAcceptedOffer = ViewBag.HasAcceptedOffer ?? false;
     bool hasPendingOffer = ViewBag.HasPendingOffer ?? false;
     bool isClient = User.Identity?.IsAuthenticated == true && (User.IsInRole("Cliente") || User.IsInRole("Client"));
