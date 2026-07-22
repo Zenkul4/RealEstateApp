@@ -49,15 +49,14 @@ public class LocalFileStorageService : IFileStorageService
         if (string.IsNullOrWhiteSpace(relativePath)) return Task.CompletedTask;
 
         var normalizedPath = relativePath.TrimStart('/', '\\').Replace('/', Path.DirectorySeparatorChar);
-        var profilesFolder = Path.GetFullPath(Path.Combine(_environment.WebRootPath, "images", "profiles"));
+        var webRootFolder = Path.GetFullPath(_environment.WebRootPath);
         var absolutePath = Path.GetFullPath(Path.Combine(_environment.WebRootPath, normalizedPath));
 
-        if (!absolutePath.StartsWith(profilesFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        if (absolutePath.StartsWith(webRootFolder, StringComparison.OrdinalIgnoreCase) && File.Exists(absolutePath))
         {
-            throw new InvalidOperationException("La ruta del archivo no pertenece al almacenamiento de perfiles.");
+            File.Delete(absolutePath);
         }
 
-        if (File.Exists(absolutePath)) File.Delete(absolutePath);
         return Task.CompletedTask;
     }
 }

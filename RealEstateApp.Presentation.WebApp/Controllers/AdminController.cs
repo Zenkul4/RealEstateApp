@@ -19,15 +19,18 @@ public class AdminController : Controller
     private readonly IUserService _userService;
     private readonly IPropertyService _propertyService;
     private readonly IAccountService _accountService;
+    private readonly IFileStorageService _fileStorageService;
 
     public AdminController(
         IUserService userService,
         IPropertyService propertyService,
-        IAccountService accountService)
+        IAccountService accountService,
+        IFileStorageService fileStorageService)
     {
         _userService = userService;
         _propertyService = propertyService;
         _accountService = accountService;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<IActionResult> Index()
@@ -104,12 +107,24 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Agents));
         }
 
-        // Cascade delete agent's properties & linked data
+        // Cascade delete agent's properties, physical image files & linked data
         var properties = await _propertyService.GetAllWithInclude();
         var agentProperties = properties.Where(p => p.AgentId == id).ToList();
         foreach (var prop in agentProperties)
         {
+            if (prop.ImageUrls != null)
+            {
+                foreach (var imgUrl in prop.ImageUrls)
+                {
+                    try { await _fileStorageService.DeleteAsync(imgUrl); } catch { }
+                }
+            }
             await _propertyService.Delete(prop.Id);
+        }
+
+        if (!string.IsNullOrEmpty(agent.PhotoUrl))
+        {
+            try { await _fileStorageService.DeleteAsync(agent.PhotoUrl); } catch { }
         }
 
         await _accountService.DeleteUserAsync(id);
@@ -172,7 +187,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (id == currentAdminId)
         {
-            TempData["ErrorMessage"] = "REGLA DE SEGURIDAD: No puede editar sus propios datos de administrador desde este mantenimiento.";
+            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
@@ -204,7 +219,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (vm.Id == currentAdminId)
         {
-            TempData["ErrorMessage"] = "REGLA DE SEGURIDAD: No puede editarse a sí mismo.";
+            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
@@ -231,7 +246,7 @@ public class AdminController : Controller
         var currentAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (adminId == currentAdminId)
         {
-            TempData["ErrorMessage"] = "REGLA DE SEGURIDAD: No puede inactivarse a sí mismo.";
+            TempData["ErrorMessage"] = "No puede editar ni inactivar su propio usuario administrador.";
             return RedirectToAction(nameof(Admins));
         }
 
