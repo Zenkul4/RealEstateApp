@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Core.Application.Interfaces;
+using RealEstateApp.Core.Application.Interfaces.Services;
 using RealEstateApp.Core.Application.ViewModels.SaleType;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
@@ -14,13 +15,16 @@ public class SaleTypeController : Controller
 {
     private readonly ISaleTypeService _saleTypeService;
     private readonly IPropertyService _propertyService;
+    private readonly IFileStorageService _fileStorageService;
 
     public SaleTypeController(
         ISaleTypeService saleTypeService,
-        IPropertyService propertyService)
+        IPropertyService propertyService,
+        IFileStorageService fileStorageService)
     {
         _saleTypeService = saleTypeService;
         _propertyService = propertyService;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<IActionResult> Index()
@@ -128,11 +132,18 @@ public class SaleTypeController : Controller
     {
         try
         {
-            // Cascade delete associated properties
+            // Cascade delete associated properties & physical images
             var properties = await _propertyService.GetAllWithInclude();
             var linkedProperties = properties.Where(p => p.SaleTypeId == id).ToList();
             foreach (var prop in linkedProperties)
             {
+                if (prop.ImageUrls != null)
+                {
+                    foreach (var imgUrl in prop.ImageUrls)
+                    {
+                        try { await _fileStorageService.DeleteAsync(imgUrl); } catch { }
+                    }
+                }
                 await _propertyService.Delete(prop.Id);
             }
 

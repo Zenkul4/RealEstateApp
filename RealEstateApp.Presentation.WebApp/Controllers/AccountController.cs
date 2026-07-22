@@ -57,6 +57,13 @@ public class AccountController : Controller
             return View(viewModel);
         }
 
+        if (response.Roles != null && response.Roles.Any(r => r.Equals("Desarrollador", StringComparison.OrdinalIgnoreCase) || r.Equals("Developer", StringComparison.OrdinalIgnoreCase)))
+        {
+            await _accountService.SignOutWebAppAsync();
+            ModelState.AddModelError(string.Empty, "Los usuarios de tipo Desarrollador no tienen acceso a la aplicación web.");
+            return View(viewModel);
+        }
+
         if (!string.IsNullOrWhiteSpace(viewModel.ReturnUrl) && Url.IsLocalUrl(viewModel.ReturnUrl))
         {
             return LocalRedirect(viewModel.ReturnUrl);
