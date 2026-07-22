@@ -41,8 +41,8 @@ public class PropertyController : Controller
         string agentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         
         var properties = await _propertyService.GetAllWithInclude();
-        // Maintenance list shows ONLY available properties owned by this agent
-        var agentProperties = properties.Where(p => p.AgentId == agentId && p.Status == "Disponible").ToList();
+        // Maintenance list shows ALL properties owned by this agent (both Disponible and Vendida)
+        var agentProperties = properties.Where(p => p.AgentId == agentId).OrderByDescending(p => p.Id).ToList();
         return View(agentProperties);
     }
 
