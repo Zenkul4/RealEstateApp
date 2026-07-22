@@ -1,20 +1,23 @@
 @model List<RealEstateApp.Core.Application.ViewModels.Account.UserViewModel>
 @{
-    ViewData["Title"] = "Gestión de Agentes";
+    ViewData["Title"] = "Mantenimiento de Desarrolladores";
 }
 
 <div class="container px-4 mt-2 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
         <div>
-            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Gestión de Agentes Inmobiliarios</h2>
-            <p class="text-muted m-0 fs-6">Consulte, active/inactive o elimine agentes registrados en la plataforma.</p>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Mantenimiento de Desarrolladores</h2>
+            <p class="text-muted m-0 fs-6">Administre las cuentas de desarrolladores con acceso API/WebApp.</p>
+        </div>
+        <div>
+            <a asp-action="CreateDeveloper" class="btn-brass px-3 py-2 text-uppercase fs-7 tracking-wider">Crear Nuevo Desarrollador</a>
         </div>
     </div>
 
     <div class="architect-card p-4">
         @if (Model == null || Model.Count == 0)
         {
-            <p class="text-muted text-center my-4">No hay agentes registrados en la plataforma.</p>
+            <p class="text-muted text-center my-4">No hay desarrolladores registrados.</p>
         }
         else
         {
@@ -23,25 +26,25 @@
                     <thead class="table-light fs-8 text-uppercase">
                         <tr>
                             <th>Nombre Completo</th>
+                            <th>Cédula</th>
                             <th>Correo Electrónico</th>
-                            <th>Propiedades</th>
+                            <th>Usuario</th>
                             <th>Estado</th>
                             <th class="text-end">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var agent in Model)
+                        @foreach (var dev in Model)
                         {
                             <tr>
                                 <td>
-                                    <span class="fw-bold text-slate-dark d-block">@agent.FullName</span>
+                                    <span class="fw-bold text-slate-dark d-block">@dev.FullName</span>
                                 </td>
-                                <td>@agent.Email</td>
+                                <td class="font-monospace fs-8">@dev.Cedula</td>
+                                <td>@dev.Email</td>
+                                <td class="font-monospace fs-8">@dev.UserName</td>
                                 <td>
-                                    <span class="badge bg-slate-dark text-white px-2 py-1 fs-9 font-monospace">@agent.ActivePropertiesCount Inmuebles</span>
-                                </td>
-                                <td>
-                                    @if (agent.IsActive)
+                                    @if (dev.IsActive)
                                     {
                                         <span class="badge bg-success text-white px-2 py-1 fs-9 text-uppercase">Activo</span>
                                     }
@@ -52,16 +55,16 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="d-inline-flex gap-2">
-                                        <form asp-action="ToggleAgentStatus" method="post" class="d-inline">
+                                        <a asp-action="EditDeveloper" asp-route-id="@dev.Id" class="btn btn-sm btn-outline-slate rounded-0 fs-9 text-uppercase px-2 py-1">Editar</a>
+
+                                        <form asp-action="ToggleDeveloperStatus" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
-                                            <input type="hidden" name="agentId" value="@agent.Id" />
-                                            <input type="hidden" name="isActive" value="@(agent.IsActive ? "false" : "true")" />
-                                            <button type="submit" class="btn btn-sm @(agent.IsActive ? "btn-warning text-dark" : "btn-success") rounded-0 fs-9 text-uppercase px-2 py-1">
-                                                @(agent.IsActive ? "Inactivar" : "Activar")
+                                            <input type="hidden" name="developerId" value="@dev.Id" />
+                                            <input type="hidden" name="isActive" value="@(dev.IsActive ? "false" : "true")" />
+                                            <button type="submit" class="btn btn-sm @(dev.IsActive ? "btn-warning text-dark" : "btn-success") rounded-0 fs-9 text-uppercase px-2 py-1">
+                                                @(dev.IsActive ? "Inactivar" : "Activar")
                                             </button>
                                         </form>
-
-                                        <a asp-action="DeleteAgent" asp-route-id="@agent.Id" class="btn btn-sm btn-danger rounded-0 fs-9 text-uppercase px-2 py-1">Eliminar</a>
                                     </div>
                                 </td>
                             </tr>

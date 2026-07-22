@@ -1,0 +1,47 @@
+@model RealEstateApp.Core.Application.ViewModels.Account.UserViewModel
+@{
+    ViewData["Title"] = "Confirmar Eliminación de Agente";
+    int propsCount = ViewBag.PropertiesCount ?? 0;
+}
+
+<div class="container px-4 mt-2 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <div>
+            <h2 class="fw-bold tracking-tight text-slate-dark m-0">Confirmar Eliminación de Agente</h2>
+            <p class="text-danger m-0 fs-6 fw-bold">ADVERTENCIA: Esta acción eliminará el agente y todas sus propiedades asociadas.</p>
+        </div>
+        <div>
+            <a asp-action="Agents" class="btn-outline-slate">Cancelar</a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="architect-card p-4 border-start border-4 border-danger">
+                <h4 class="fw-bold text-slate-dark mb-3">@Model.FullName (@Model.Email)</h4>
+                <p class="fs-6 text-slate-medium">
+                    ¿Está seguro de que desea eliminar permanentemente al agente <strong>@Model.FullName</strong>?
+                </p>
+
+                @if (propsCount > 0)
+                {
+                    <div class="alert alert-warning rounded-0 border-warning my-3 p-3">
+                        <h6 class="fw-bold m-0 mb-1">¡Atención! Borrado en Cascada Requerido</h6>
+                        <p class="m-0 fs-8">Este agente tiene <strong>@propsCount propiedad(es)</strong> registrada(s). Al confirmar la eliminación, se eliminarán en cascada todas sus propiedades, imágenes, ofertas y chats asociados para evitar datos huérfanos.</p>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted fs-8">Este agente no tiene propiedades registradas actualmente.</p>
+                }
+
+                <form asp-action="DeleteAgent" method="post" class="mt-4 pt-3 border-top border-light d-flex justify-content-end gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <a asp-action="Agents" class="btn-outline-slate px-4 py-2 text-uppercase fs-8">Cancelar</a>
+                    <button type="submit" class="btn btn-danger rounded-0 px-4 py-2 text-uppercase fs-8 fw-bold">Confirmar Eliminación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

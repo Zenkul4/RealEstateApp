@@ -28,9 +28,10 @@
                 <table class="table-architect">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 30%">Nombre</th>
-                            <th scope="col" style="width: 50%">Descripción</th>
-                            <th scope="col" class="text-end" style="width: 20%">Acciones</th>
+                            <th scope="col" style="width: 25%">Nombre</th>
+                            <th scope="col" style="width: 45%">Descripción</th>
+                            <th scope="col" style="width: 15%">Propiedades</th>
+                            <th scope="col" class="text-end" style="width: 15%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +40,9 @@
                             <tr>
                                 <td class="fw-semibold">@item.Name</td>
                                 <td class="text-muted">@item.Description</td>
+                                <td>
+                                    <span class="badge bg-slate-dark text-white px-2 py-1 font-monospace">@item.PropertiesCount Inmuebles</span>
+                                </td>
                                 <td class="text-end">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn-outline-brass btn-sm px-3 py-1 me-2">Editar</a>
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn-outline-slate btn-sm px-3 py-1">Eliminar</a>

@@ -1,24 +1,38 @@
-using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RealEstateApp.Core.Application.Interfaces;
 using RealEstateApp.Core.Application.ViewModels.Improvement;
-using System.Threading.Tasks;
 
 namespace RealEstateApp.Presentation.WebApp.Controllers;
 
-[Authorize(Roles = "Administrador")]
+[Authorize(Roles = "Administrador,Admin")]
 public class ImprovementController : Controller
 {
     private readonly IImprovementService _improvementService;
+    private readonly IPropertyService _propertyService;
 
-    public ImprovementController(IImprovementService improvementService)
+    public ImprovementController(
+        IImprovementService improvementService,
+        IPropertyService propertyService)
     {
         _improvementService = improvementService;
+        _propertyService = propertyService;
     }
 
     public async Task<IActionResult> Index()
     {
         var list = await _improvementService.GetAllWithInclude();
+        var properties = await _propertyService.GetAllWithInclude();
+
+        foreach (var item in list)
+        {
+            item.PropertiesCount = properties.Count(p => p.ImprovementNames != null && p.ImprovementNames.Contains(item.Name));
+        }
+
         return View(list);
     }
 
@@ -36,7 +50,15 @@ public class ImprovementController : Controller
             return View(vm);
         }
 
+        var list = await _improvementService.GetAllWithInclude();
+        if (list.Any(x => x.Name.Trim().Equals(vm.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            ModelState.AddModelError("Name", $"Ya existe una mejora registrada con el nombre '{vm.Name}'.");
+            return View(vm);
+        }
+
         await _improvementService.Add(vm);
+        TempData["SuccessMessage"] = "Mejora creada exitosamente.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -63,6 +85,13 @@ public class ImprovementController : Controller
             return View(vm);
         }
 
+        var list = await _improvementService.GetAllWithInclude();
+        if (list.Any(x => x.Id != vm.Id && x.Name.Trim().Equals(vm.Name.Trim(), StringComparison.OrdinalIgnoreCase)))
+        {
+            ModelState.AddModelError("Name", $"Ya existe otra mejora registrada con el nombre '{vm.Name}'.");
+            return View(vm);
+        }
+
         try
         {
             await _improvementService.Update(vm, vm.Id);
@@ -81,6 +110,8 @@ public class ImprovementController : Controller
         try
         {
             var vm = await _improvementService.GetByIdSaveViewModel(id);
+            var properties = await _propertyService.GetAllWithInclude();
+            ViewBag.PropertiesCount = properties.Count(p => p.ImprovementNames != null && p.ImprovementNames.Contains(vm.Name));
             return View(vm);
         }
         catch (KeyNotFoundException)
@@ -97,8 +128,9 @@ public class ImprovementController : Controller
     {
         try
         {
+            // Deletes ONLY the improvement entity and its relationship links, DOES NOT delete properties
             await _improvementService.Delete(id);
-            TempData["SuccessMessage"] = "Mejora eliminada correctamente.";
+            TempData["SuccessMessage"] = "Mejora eliminada correctamente. Las propiedades asociadas no fueron afectadas.";
         }
         catch (KeyNotFoundException)
         {
