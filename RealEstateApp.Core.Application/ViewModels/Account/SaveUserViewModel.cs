@@ -1,4 +1,3 @@
-// ViewModels/Account/SaveUserViewModel.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace RealEstateApp.Core.Application.ViewModels.Account;

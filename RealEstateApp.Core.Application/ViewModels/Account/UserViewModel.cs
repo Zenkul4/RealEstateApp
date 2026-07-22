@@ -1,4 +1,3 @@
-// ViewModels/Account/UserViewModel.cs
 namespace RealEstateApp.Core.Application.ViewModels.Account;
 
 public class UserViewModel

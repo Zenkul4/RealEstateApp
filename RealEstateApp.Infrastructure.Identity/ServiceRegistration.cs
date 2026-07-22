@@ -1,4 +1,3 @@
-// ServiceRegistration.cs
 using System;
 using System.Security.Claims;
 using System.Text;

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RealEstateApp.Infrastructure.Identity.Models;
@@ -11,13 +11,10 @@ public class IdentityContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // Obligatorio llamar al base primero en IdentityDbContext
         base.OnModelCreating(builder);
 
-        // Asignación del esquema 'Identity'
         builder.HasDefaultSchema("Identity");
 
-        // Renombrar las tablas por defecto de ASP.NET Identity
         builder.Entity<ApplicationUser>(entity =>
         {
             entity.ToTable("Users");

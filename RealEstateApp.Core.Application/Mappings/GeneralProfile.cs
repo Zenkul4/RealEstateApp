@@ -1,4 +1,3 @@
-// Mappings/GeneralProfile.cs
 using AutoMapper;
 using RealEstateApp.Core.Application.DTOs.Account;
 using RealEstateApp.Core.Application.ViewModels.Account;

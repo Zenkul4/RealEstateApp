@@ -1,4 +1,3 @@
-// ViewModels/SaleType/SaveSaleTypeViewModel.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace RealEstateApp.Core.Application.ViewModels.SaleType;

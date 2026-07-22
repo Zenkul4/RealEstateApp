@@ -1,4 +1,3 @@
-// Services/PropertyService.cs
 namespace RealEstateApp.Core.Application.Services;
 
 using System.Collections.Generic;
@@ -34,7 +33,6 @@ public class PropertyService : IPropertyService
         var property = _mapper.Map<Property>(vm);
         property.Status = RealEstateApp.Core.Domain.Enums.PropertyStatus.Disponible;
         
-        // Generar código de propiedad de 6 dígitos único
         var random = new Random();
         string code;
         bool isUnique = false;
@@ -57,7 +55,6 @@ public class PropertyService : IPropertyService
             }
         }
 
-        // Map Image URLs
         property.Images = new List<PropertyImage>();
         if (!string.IsNullOrEmpty(vm.ImageOneUrl)) property.Images.Add(new PropertyImage { ImageUrl = vm.ImageOneUrl });
         if (!string.IsNullOrEmpty(vm.ImageTwoUrl)) property.Images.Add(new PropertyImage { ImageUrl = vm.ImageTwoUrl });
@@ -113,7 +110,6 @@ public class PropertyService : IPropertyService
         var vm = _mapper.Map<SavePropertyViewModel>(property);
         vm.SelectedImprovements = property.Improvements.Select(i => i.Id).ToList();
 
-        // Load existing image URLs
         var imagesList = property.Images.ToList();
         if (imagesList.Count > 0) vm.ImageOneUrl = imagesList[0].ImageUrl;
         if (imagesList.Count > 1) vm.ImageTwoUrl = imagesList[1].ImageUrl;

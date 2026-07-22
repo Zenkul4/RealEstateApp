@@ -132,7 +132,6 @@ public class SaleTypeController : Controller
     {
         try
         {
-            // Cascade delete associated properties & physical images
             var properties = await _propertyService.GetAllWithInclude();
             var linkedProperties = properties.Where(p => p.SaleTypeId == id).ToList();
             foreach (var prop in linkedProperties)

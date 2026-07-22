@@ -1,4 +1,3 @@
-// Services/PropertyTypeService.cs
 namespace RealEstateApp.Core.Application.Services;
 
 using System.Collections.Generic;

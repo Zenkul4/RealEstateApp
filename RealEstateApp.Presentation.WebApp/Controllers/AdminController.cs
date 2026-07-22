@@ -107,7 +107,6 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Agents));
         }
 
-        // Cascade delete agent's properties, physical image files & linked data
         var properties = await _propertyService.GetAllWithInclude();
         var agentProperties = properties.Where(p => p.AgentId == id).ToList();
         foreach (var prop in agentProperties)
